@@ -2,7 +2,7 @@
 
 ## 1. Problem Statement
 
-Design an extensible, configurable, high-performance, and thread-safe **Logging Framework** in Java (similar to Log4j / SLF4J / Logback) capable of capturing log messages with severity levels, routing them through customizable formatting pipelines, filtering messages dynamically, and dispatching them to multiple output destinations (Console, File, Database) concurrently.
+Design an extensible, configurable, high-performance, and thread-safe **Logging Framework** in Java (similar to Log4j / SLF4J / Logback) capable of capturing log messages with severity levels, routing them through customizable formatting pipelines, filtering messages dynamically, and dispatching them to multiple output destinations (`ConsoleAppender`, `FileAppender`, `DatabaseAppender`) concurrently.
 
 ---
 
@@ -11,7 +11,7 @@ Design an extensible, configurable, high-performance, and thread-safe **Logging 
 ### Functional Requirements
 - **5 Severity Levels with Priority Hierarchy:** `DEBUG (1)` < `INFO (2)` < `WARNING (3)` < `ERROR (4)` < `FATAL (5)`. Only messages with priority $\ge$ configured threshold are logged.
 - **Log Message Structure:** Timestamp, LogLevel, Message string, and optional Source (Class/Method name).
-- **Multiple Output Destinations (Appenders):** Support writing to Console, File, or external sinks simultaneously.
+- **Multiple Output Destinations (Appenders):** Support writing to Console, File, or Database destinations simultaneously.
 - **Pluggable Message Formatting:** Support `SimpleFormatter` and `DetailedFormatter` (including timestamps, sources, and thread IDs).
 - **Chain of Filters:** Inspect and drop messages before formatting/appending using configurable criteria (e.g. `LevelFilter`, `SourceFilter`).
 - **Dynamic Reconfiguration:** Change log level and attach/remove appenders at runtime.
@@ -23,190 +23,127 @@ Design an extensible, configurable, high-performance, and thread-safe **Logging 
 
 ---
 
-## 3. Core Entities
-
-- **`LogLevel` (Enum):** Priority enumeration (`DEBUG(1)` to `FATAL(5)`) with `isGreaterOrEqual()` comparison.
-- **`LogMessage` (Domain Entity):** Immutable data holder constructed via the **Builder Pattern**.
-- **`LogFormatter` (Strategy Interface):** Defines layout rendering contracts (`SimpleFormatter`, `DetailedFormatter`).
-- **`LogAppender` (Strategy Interface):** Defines output destination contracts (`ConsoleAppender`, `FileAppender`).
-- **`LogFilter` (Chain of Responsibility Interface):** Defines filtering predicates (`LevelFilter`, `SourceFilter`).
-- **`Logger` (Core Orchestrator):** Manages appenders, filters, and logging thresholds.
-
----
-
-## 4. Main Use Cases
-
-1. **Log Level Filtering:** When set to `WARNING`, skip `DEBUG` and `INFO`, but record `WARNING`, `ERROR`, and `FATAL`.
-2. **Multi-Destination Appending:** Route an error message to both the Console and an asynchronous File Appender.
-3. **Custom Detailed Formatting:** Format log messages with timestamp, source class, and thread name.
-4. **Source Package Filtering:** Restrict audit logging strictly to packages matching `com.takeuforward.*`.
-5. **Concurrent Multi-Threaded Logging:** Multiple worker threads safely writing simultaneously.
-
----
-
-## 5. Class Responsibilities
-
-| Class / Interface | Responsibility (1 Line) |
-|---|---|
-| **`LogLevel`** | Encapsulates 5 severity priorities and provides ordinal comparison logic. |
-| **`LogMessage`** | Immutable entity encapsulating timestamp, severity level, message body, and source. |
-| **`LogFormatter`** | Strategy interface converting raw `LogMessage` objects into formatted output strings. |
-| **`SimpleFormatter`** | Standard layout: `[LEVEL] [TIMESTAMP] - MESSAGE`. |
-| **`DetailedFormatter`** | Comprehensive layout: `[LEVEL] [TIMESTAMP] [SOURCE] [THREAD] - MESSAGE`. |
-| **`LogAppender`** | Strategy interface defining destination sink output operations. |
-| **`ConsoleAppender`** | Thread-safe writer outputting to standard `System.out` / `System.err`. |
-| **`FileAppender`** | Thread-safe writer appending logs to a designated filesystem path with console fallback. |
-| **`LogFilter`** | Chain of Responsibility interface determining whether a message should proceed. |
-| **`LevelFilter`** | Rejects messages below a minimum severity threshold. |
-| **`SourceFilter`** | Rejects messages whose source does not match an allowed namespace prefix. |
-| **`Logger`** | Thread-safe central facade coordinating level checks, filter chains, and appender dispatches. |
-
----
-
-## 6. Class Relationships
+## 3. Package Structure
 
 ```
-                             +-------------------+
-                             |     <<Enum>>      |
-                             |     LogLevel      |
-                             +-------------------+
-                                       ^
-                                       |
-+-------------------+        +-------------------+        +--------------------+
-|    LogMessage     | -----> |      Logger       | -----> |   <<Interface>>    |
-| (Built via Builder)|        | (Central Facade)  |        |     LogFilter      |
-+-------------------+        +-------------------+        +--------------------+
-                                       |                            ^
-                                       v                            |
-                             +-------------------+        +---------+----------+
-                             |   <<Interface>>   |        | LevelFilter        |
-                             |    LogAppender    |        | SourceFilter       |
-                             +-------------------+        +--------------------+
-                                       |
-                    +------------------+------------------+
-                    |                                     |
-                    v                                     v
-          +-------------------+                 +-------------------+
-          |  ConsoleAppender  |                 |   FileAppender    |
-          +-------------------+                 +-------------------+
-                    |                                     |
-                    +------------------+------------------+
-                                       | uses
-                                       v
-                             +-------------------+
-                             |   <<Interface>>   |
-                             |   LogFormatter    |
-                             +-------------------+
-                                  /         \
-                                 /           \
-                 +-------------------+   +--------------------+
-                 |  SimpleFormatter  |   | DetailedFormatter  |
-                 +-------------------+   +--------------------+
+src/
+├── appenders/
+│   ├── ConsoleAppender.java
+│   ├── DatabaseAppender.java
+│   └── FileAppender.java
+├── core/
+│   ├── LogAppender.java       (Interface)
+│   ├── LogConfiguration.java
+│   ├── LogFilter.java          (Interface)
+│   ├── LogFormatter.java       (Interface)
+│   ├── Logger.java             (Interface)
+│   ├── LoggerImpl.java
+│   ├── LogLevel.java           (Enum)
+│   └── LogMessage.java
+├── filter/
+│   ├── LevelFilter.java
+│   └── SourceFilter.java
+├── formatters/
+│   ├── DetailedFormatter.java
+│   └── SimpleFormatter.java
+└── main/
+    └── LoggingDemo.java
 ```
 
 ---
 
-## 7. Design
+## 4. Class Responsibilities
 
-### Important Design Decisions
-1. **Separation of Destination and Layout:** Decoupled `LogAppender` (where to write) from `LogFormatter` (how to format), allowing any appender to use any formatter dynamically.
-2. **Immutable `LogMessage` with Builder:** Prevents message corruption as the object passes through multiple asynchronous appenders and filters.
-3. **Thread Safety without Global Locks:** Used `CopyOnWriteArrayList` for appender/filter registrations and fine-grained synchronization in appenders to prevent thread contention bottlenecks.
-
-### SOLID Principles
-- **SRP (Single Responsibility):** Formatters only format; Appenders only write; Filters only inspect; Logger only orchestrates.
-- **OCP (Open/Closed Principle):** Add new appenders (e.g. `KafkaAppender`) or formatters (`JsonFormatter`) without changing 1 line of existing code.
-- **LSP (Liskov Substitution):** All formatters, appenders, and filters are 100% interchangeable.
-- **ISP (Interface Segregation):** Clean, minimal interfaces (`LogFormatter`, `LogAppender`, `LogFilter`).
-- **DIP (Dependency Inversion):** `Logger` depends purely on abstractions, not concrete console/file writers.
-
-### Design Patterns
-- **Strategy Pattern:** Used for interchangeable output sinks (`LogAppender`) and layouts (`LogFormatter`).
-- **Chain of Responsibility Pattern:** Used for sequential filter execution (`LogFilter`).
-- **Builder Pattern:** Used for clean instantiation of `LogMessage`.
+| Package | Class / Interface | Responsibility (1 Line) |
+|---|---|---|
+| `core` | **`LogLevel`** | Enum defining severity priorities (`DEBUG(1)` to `FATAL(5)`) with comparison helpers. |
+| `core` | **`LogMessage`** | Immutable value object encapsulating timestamp, level, message, and source (built via Builder). |
+| `core` | **`LogFormatter`** | Strategy interface converting raw `LogMessage` objects into formatted strings. |
+| `core` | **`LogAppender`** | Strategy interface defining destination sink append and level checks. |
+| `core` | **`LogFilter`** | Chain of Responsibility interface for filtering messages before dispatch. |
+| `core` | **`LogConfiguration`** | Configuration bean holding root logging levels and system preferences. |
+| `core` | **`Logger`** | Public contract interface exposing logging methods (`debug`, `info`, `warning`, `error`, `fatal`). |
+| `core` | **`LoggerImpl`** | Thread-safe implementation orchestrating level checks, filters, and appenders. |
+| `formatters` | **`SimpleFormatter`** | Layout: `[LEVEL] [TIMESTAMP] - MESSAGE`. |
+| `formatters` | **`DetailedFormatter`** | Layout: `[LEVEL] [TIMESTAMP] [SOURCE] [THREAD] - MESSAGE`. |
+| `appenders` | **`ConsoleAppender`** | Outputs to standard `System.out` or `System.err`. |
+| `appenders` | **`FileAppender`** | Writes logs to a designated filesystem path with console fallback. |
+| `appenders` | **`DatabaseAppender`** | Stores structured records into database tables with connection outage handling. |
+| `filter` | **`LevelFilter`** | Drops messages below a configured minimum severity. |
+| `filter` | **`SourceFilter`** | Drops messages whose source does not match an allowed package prefix. |
+| `main` | **`LoggingDemo`** | Main simulation driver verifying all scenarios, multi-threading, and error handling. |
 
 ---
 
-## 8. Main Flows
+## 5. Design Patterns & SOLID Principles
+
+- **Strategy Pattern:**
+  - `LogAppender` hierarchy (`ConsoleAppender`, `FileAppender`, `DatabaseAppender`) makes output destinations interchangeable.
+  - `LogFormatter` hierarchy (`SimpleFormatter`, `DetailedFormatter`) makes layout rendering interchangeable.
+- **Chain of Responsibility Pattern:**
+  - `LogFilter` chain (`LevelFilter`, `SourceFilter`) evaluates sequential filtering predicates, halting processing early on rejection.
+- **Builder Pattern:**
+  - `LogMessage.Builder` allows safe, step-by-step construction of immutable log messages.
+- **Single Responsibility Principle (SRP):**
+  - Appenders only write; Formatters only format; Filters only inspect; Logger only orchestrates.
+- **Dependency Inversion Principle (DIP):**
+  - High-level `LoggerImpl` depends strictly on interfaces (`LogAppender`, `LogFormatter`, `LogFilter`).
+
+---
+
+## 6. Main Flows
 
 ### Flow 1: Standard Application Logging
 ```
 App calls logger.info("User registered", "UserService")
-  -> Logger checks if INFO >= rootLevel (true)
-  -> Builds immutable LogMessage
-  -> Passes message to Filter Chain (LevelFilter & SourceFilter both return true)
-  -> Iterates through Appenders (ConsoleAppender & FileAppender)
-  -> Each Appender invokes its assigned Formatter (DetailedFormatter.format(message))
-  -> Thread-safe write to output destination
+  -> LoggerImpl checks: INFO (2) >= rootLevel (2) -> TRUE
+  -> Builds immutable LogMessage via Builder
+  -> Passes message to Filter Chain (LevelFilter & SourceFilter return true)
+  -> Iterates over Appenders (ConsoleAppender, FileAppender, DatabaseAppender)
+  -> Appender checks: isEnabled(INFO) -> TRUE
+  -> Appender invokes its Formatter (DetailedFormatter.format(message))
+  -> Thread-safe synchronized write to output destination
 ```
 
 ### Flow 2: Log Filtering & Level Dropping
 ```
-Logger level configured to WARNING
+Logger level configured to WARNING (3)
 App calls logger.debug("Cache miss")
-  -> Logger checks: DEBUG (1) >= WARNING (3) -> FALSE
-  -> Drops message immediately (Zero allocation overhead)
+  -> LoggerImpl checks: DEBUG (1) >= WARNING (3) -> FALSE
+  -> Drops message immediately (Zero formatting or I/O overhead)
 ```
 
 ---
 
-## 9. Edge Cases
+## 7. Edge Cases Handled
 
-1. **Multiple Concurrent Threads:** Handled using `synchronized` blocks inside appenders and `CopyOnWriteArrayList` for appender lists, ensuring zero interleaved text.
-2. **File System Outage / Full Disk:** `FileAppender` catches `IOException` and gracefully falls back to `System.err` console output without crashing the application.
-3. **Null / Blank Log Messages:** `LogMessage.Builder` validates input and throws `IllegalArgumentException` on invalid payloads.
-4. **Third-Party Noise / Package Flooding:** `SourceFilter` blocks log messages from external libraries.
-
----
-
-## 10. How the Code Works
-
-1. `Logger.getLogger("ServiceName")` retrieves or instantiates a named logger.
-2. `logger.setLevel(LogLevel.WARNING)` sets the threshold.
-3. `logger.addAppender(new ConsoleAppender(LogLevel.DEBUG, new DetailedFormatter()))` attaches output destinations.
-4. When `logger.error("DB Timeout")` is called, the framework constructs a `LogMessage`, passes it through the filter chain, formats it, and outputs to the console and log files.
+1. **Concurrent Multi-Threaded Logging:** Handled via `synchronized` append methods and `CopyOnWriteArrayList` collections, preventing interleaved or corrupted text.
+2. **Database Outage / File Write Errors:** `DatabaseAppender` and `FileAppender` catch exceptions and gracefully route unwritten logs to `System.err` console fallback.
+3. **Invalid Input:** `LogMessage.Builder` validates message text, throwing `IllegalArgumentException` on null/blank inputs.
+4. **Unwanted Third-Party Noise:** `SourceFilter` discards log messages from unwanted namespaces.
 
 ---
 
-## 11. How to Run
+## 8. How to Run
 
-Compile and execute the self-contained simulation from the `03-Logging-Framework-Design` directory:
+Compile and execute from the `03-Logging-Framework-Design` directory:
 
 ```bash
-# Compile all source files
-javac -d bin src/*.java
+# Compile all packaged Java sources
+javac -d bin $(find src -name "*.java")
 
-# Run the simulation driver
-java -cp bin Main
+# Run the complete demonstration
+java -cp bin main.LoggingDemo
 ```
-
----
-
-## 12. Interview Thinking
-
-### How I Would Explain This in an Interview
-1. **Step 1 (Clarify):** Confirm supported log levels (5 levels), destinations required (Console/File), formatting flexibility, and thread-safety requirements.
-2. **Step 2 (Entities):** Propose `LogLevel` enum, immutable `LogMessage`, `LogAppender` interface, `LogFormatter` interface, and `LogFilter` interface.
-3. **Step 3 (Patterns):** Explain why the **Strategy Pattern** fits Appenders/Formatters and **Chain of Responsibility** fits Filters.
-4. **Step 4 (Concurrency):** Emphasize thread safety using thread-safe collections and synchronized appender output streams.
-
-### Likely Interviewer Follow-up Questions
-1. *How would you support Asynchronous Non-Blocking Logging?*
-   - **Answer:** Introduce an `AsyncAppender` backed by a `BlockingQueue` (or LMAX Disruptor ring buffer). Application threads enqueue log events without waiting for disk I/O, while a background worker thread polls the queue and writes in batches.
-2. *How do you handle log file rolling / rotation?*
-   - **Answer:** Implement a `RollingFileAppender` with a `SizeBasedTriggeringPolicy` (e.g. roll at 50MB) and `TimeBasedRollingPolicy` (e.g. compress daily logs into `app-YYYY-MM-DD.gz`).
-
-### Trade-offs
-- **Synchronous vs Asynchronous Appenders:** Synchronous writing is simpler and guarantees logs are persisted before crashes, but introduces I/O latency to application threads. Asynchronous writing maximizes throughput but risks losing in-flight queue messages on abrupt JVM crashes.
 
 ---
 
 ## 🎯 Quick Summary
 
 - **Problem:** Design an extensible, thread-safe logging framework with multi-level filtering and pluggable destinations.
-- **Core Classes:** `Logger`, `LogLevel`, `LogMessage`, `LogAppender`, `LogFormatter`, `LogFilter`.
+- **Core Classes:** `LoggerImpl`, `LogLevel`, `LogMessage`, `LogAppender`, `LogFormatter`, `LogFilter`.
 - **Main Flow:** `logger.log()` $\rightarrow$ Level Check $\rightarrow$ Filter Chain $\rightarrow$ Appender Dispatch $\rightarrow$ Formatter Rendering $\rightarrow$ Output Write.
 - **Important Design:** Strategy Pattern for Appenders and Formatters; Chain of Responsibility for Filters.
-- **Edge Cases:** Thread concurrency locks, file write failure fallback to console, and builder input validation.
+- **Edge Cases:** Thread concurrency locks, file/database write failure fallback to console, and builder input validation.
 - **LLD Takeaway:** Decouple output destinations from message formatting to maximize flexibility and adhere to the Open/Closed Principle.
 - **Memorable Rule:** *"Format with strategies, route to appenders, filter through chains, and lock down concurrency."*

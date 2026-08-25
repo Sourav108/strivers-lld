@@ -1,3 +1,8 @@
+package filter;
+
+import core.LogFilter;
+import core.LogMessage;
+
 public class SourceFilter implements LogFilter {
     private final String allowedSourcePrefix;
 

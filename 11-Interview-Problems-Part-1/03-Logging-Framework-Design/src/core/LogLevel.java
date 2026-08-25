@@ -1,3 +1,5 @@
+package core;
+
 public enum LogLevel {
     DEBUG(1),
     INFO(2),

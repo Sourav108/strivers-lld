@@ -1,3 +1,7 @@
+package formatters;
+
+import core.LogFormatter;
+import core.LogMessage;
 import java.time.format.DateTimeFormatter;
 
 public class SimpleFormatter implements LogFormatter {

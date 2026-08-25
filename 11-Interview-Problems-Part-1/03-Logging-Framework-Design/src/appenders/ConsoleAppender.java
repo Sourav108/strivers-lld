@@ -1,3 +1,11 @@
+package appenders;
+
+import core.LogAppender;
+import core.LogFormatter;
+import core.LogLevel;
+import core.LogMessage;
+import formatters.SimpleFormatter;
+
 public class ConsoleAppender implements LogAppender {
     private LogLevel level;
     private LogFormatter formatter;
@@ -13,7 +21,7 @@ public class ConsoleAppender implements LogAppender {
 
     @Override
     public synchronized void append(LogMessage message) {
-        if (message.getLevel().isGreaterOrEqual(this.level)) {
+        if (isEnabled(message.getLevel())) {
             String formattedMessage = formatter.format(message);
             if (message.getLevel().isGreaterOrEqual(LogLevel.ERROR)) {
                 System.err.println(formattedMessage);
@@ -26,4 +34,6 @@ public class ConsoleAppender implements LogAppender {
     @Override public LogLevel getLevel() { return level; }
     @Override public void setLevel(LogLevel level) { this.level = level; }
     @Override public void setFormatter(LogFormatter formatter) { this.formatter = formatter; }
+    @Override public LogFormatter getFormatter() { return formatter; }
+    @Override public boolean isEnabled(LogLevel level) { return level.isGreaterOrEqual(this.level); }
 }

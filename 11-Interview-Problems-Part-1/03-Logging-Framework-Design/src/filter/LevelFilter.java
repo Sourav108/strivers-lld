@@ -1,3 +1,9 @@
+package filter;
+
+import core.LogFilter;
+import core.LogLevel;
+import core.LogMessage;
+
 public class LevelFilter implements LogFilter {
     private final LogLevel minLevel;
 
