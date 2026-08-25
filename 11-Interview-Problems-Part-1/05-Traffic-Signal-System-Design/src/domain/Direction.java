@@ -1,3 +1,5 @@
+package domain;
+
 public enum Direction {
     NORTH,
     EAST,

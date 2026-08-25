@@ -1,21 +1,26 @@
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package service;
+
+import domain.Direction;
+import domain.Intersection;
+import domain.TrafficLight;
+import repository.IntersectionRepository;
 
 public class IntersectionService {
-    private final Map<Integer, Intersection> intersections = new ConcurrentHashMap<>();
+    private final IntersectionRepository intersectionRepository;
+
+    public IntersectionService(IntersectionRepository intersectionRepository) {
+        this.intersectionRepository = intersectionRepository;
+    }
 
     public Intersection createIntersection(int id, String name) {
         Intersection intersection = new Intersection(id, name);
-        intersections.put(id, intersection);
+        intersectionRepository.save(intersection);
         return intersection;
     }
 
     public Intersection getIntersection(int id) {
-        Intersection intersection = intersections.get(id);
-        if (intersection == null) {
-            throw new IllegalArgumentException("Intersection #" + id + " not found.");
-        }
-        return intersection;
+        return intersectionRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Intersection #" + id + " not found."));
     }
 
     // Advance to a specific direction phase in a controlled, safe sequence

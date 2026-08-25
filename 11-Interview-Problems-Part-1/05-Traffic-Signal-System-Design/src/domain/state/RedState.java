@@ -1,3 +1,7 @@
+package domain.state;
+
+import domain.TrafficLight;
+
 public class RedState implements TrafficLightState {
     @Override
     public void turnGreen(TrafficLight trafficLight) {

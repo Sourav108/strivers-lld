@@ -1,3 +1,8 @@
+package domain;
+
+import domain.state.RedState;
+import domain.state.TrafficLightState;
+
 public class TrafficLight {
     private final Direction direction;
     private TrafficLightState currentState;

@@ -1,3 +1,5 @@
+package domain;
+
 public class VehicleCounter {
     private final Direction direction;
     private int count;

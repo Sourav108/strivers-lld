@@ -1,12 +1,18 @@
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+package service;
+
+import domain.Direction;
+import domain.EmergencyRequest;
+import domain.Intersection;
+import domain.TrafficLight;
+import repository.EmergencyRepository;
 
 public class EmergencyService {
     private final IntersectionService intersectionService;
-    private final Map<Integer, EmergencyRequest> activeEmergencies = new ConcurrentHashMap<>();
+    private final EmergencyRepository emergencyRepository;
 
-    public EmergencyService(IntersectionService intersectionService) {
+    public EmergencyService(IntersectionService intersectionService, EmergencyRepository emergencyRepository) {
         this.intersectionService = intersectionService;
+        this.emergencyRepository = emergencyRepository;
     }
 
     public synchronized EmergencyRequest requestEmergency(int intersectionId, Direction emergencyDirection, int durationSeconds) {
@@ -28,13 +34,13 @@ public class EmergencyService {
         System.out.println("   🟢 [" + emergencyDirection + "] Priority GREEN granted for " + durationSeconds + " seconds.");
 
         EmergencyRequest request = new EmergencyRequest(intersectionId, emergencyDirection, durationSeconds);
-        activeEmergencies.put(intersectionId, request);
+        emergencyRepository.save(request);
         return request;
     }
 
     public synchronized void endEmergency(int intersectionId) {
         Intersection intersection = intersectionService.getIntersection(intersectionId);
-        EmergencyRequest request = activeEmergencies.remove(intersectionId);
+        EmergencyRequest request = emergencyRepository.getActiveEmergency(intersectionId).orElse(null);
         if (request == null || !intersection.isEmergencyMode()) {
             System.out.println("⚠️ No active emergency found for intersection #" + intersectionId);
             return;
@@ -50,6 +56,7 @@ public class EmergencyService {
 
         // 2. Deactivate emergency mode
         request.deactivate();
+        emergencyRepository.remove(intersectionId);
         intersection.setEmergencyMode(false, null);
 
         // 3. Resume normal cycle from paused phase
@@ -59,5 +66,9 @@ public class EmergencyService {
 
         // Reactivate the resumed phase
         intersectionService.advancePhase(intersectionId, resumedDirection);
+    }
+
+    public EmergencyRequest getActiveEmergency(int intersectionId) {
+        return emergencyRepository.getActiveEmergency(intersectionId).orElse(null);
     }
 }

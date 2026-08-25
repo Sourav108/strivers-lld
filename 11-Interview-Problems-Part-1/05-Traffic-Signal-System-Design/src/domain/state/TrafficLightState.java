@@ -1,3 +1,7 @@
+package domain.state;
+
+import domain.TrafficLight;
+
 public interface TrafficLightState {
     void turnGreen(TrafficLight trafficLight);
     void turnYellow(TrafficLight trafficLight);

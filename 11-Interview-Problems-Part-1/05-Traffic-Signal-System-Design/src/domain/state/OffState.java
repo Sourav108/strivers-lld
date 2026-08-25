@@ -1,12 +1,16 @@
-public class YellowState implements TrafficLightState {
+package domain.state;
+
+import domain.TrafficLight;
+
+public class OffState implements TrafficLightState {
     @Override
     public void turnGreen(TrafficLight trafficLight) {
-        throw new InvalidStateTransitionException("❌ Invalid transition: Cannot change directly from YELLOW to GREEN. Must change to RED.");
+        trafficLight.setState(new GreenState());
     }
 
     @Override
     public void turnYellow(TrafficLight trafficLight) {
-        // Already YELLOW, no-op
+        trafficLight.setState(new YellowState());
     }
 
     @Override
@@ -16,11 +20,11 @@ public class YellowState implements TrafficLightState {
 
     @Override
     public void turnOff(TrafficLight trafficLight) {
-        trafficLight.setState(new OffState());
+        // Already OFF, no-op
     }
 
     @Override
     public String getStateName() {
-        return "YELLOW";
+        return "OFF";
     }
 }

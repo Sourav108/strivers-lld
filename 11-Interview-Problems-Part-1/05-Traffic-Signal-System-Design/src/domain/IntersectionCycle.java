@@ -1,3 +1,5 @@
+package domain;
+
 public class IntersectionCycle {
     private static final Direction[] PHASES = {
             Direction.NORTH,

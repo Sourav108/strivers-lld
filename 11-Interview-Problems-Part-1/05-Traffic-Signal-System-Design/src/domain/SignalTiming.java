@@ -1,3 +1,5 @@
+package domain;
+
 public class SignalTiming {
     private final Direction direction;
     private int greenDurationSeconds;

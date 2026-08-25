@@ -1,5 +1,23 @@
+import controller.EmergencyController;
+import controller.IntersectionController;
+import controller.TimingController;
+import controller.TrafficController;
+import domain.Direction;
+import domain.Intersection;
+import domain.TrafficLight;
+import domain.state.InvalidStateTransitionException;
+import repository.EmergencyRepository;
+import repository.IntersectionRepository;
+import repository.TimingRepository;
+import repository.TrafficRepository;
+import service.EmergencyService;
+import service.IntersectionService;
+import service.TimingService;
+import service.TrafficService;
+
 /**
- * Main Simulation Driver for the Traffic Signal System
+ * TrafficSignalSystem: Complete Simulation Driver for the Traffic Signal Control System
+ * 
  * Demonstrates:
  * 1. Intersection setup with 4 traffic lights (NORTH, EAST, SOUTH, WEST)
  * 2. Normal automatic cycle phase transitions (RED -> GREEN -> YELLOW -> RED)
@@ -8,21 +26,34 @@
  * 5. Vehicle Density Counting & Dynamic Green Light Timing Adjustments
  */
 
-public class Main {
+public class TrafficSignalSystem {
     public static void main(String[] args) {
         System.out.println("=================================================================");
-        System.out.println("🚦 SMART TRAFFIC SIGNAL CONTROL SYSTEM - LLD DEMONSTRATION");
+        System.out.println("🚦 SMART TRAFFIC SIGNAL CONTROL SYSTEM - LLD ARCHITECTURE DEMO");
         System.out.println("=================================================================");
 
-        // --- 1. INITIALIZE SERVICES ---
-        IntersectionService intersectionService = new IntersectionService();
-        EmergencyService emergencyService = new EmergencyService(intersectionService);
-        TrafficService trafficService = new TrafficService(intersectionService);
-        TimingService timingService = new TimingService(intersectionService);
+        // --- 1. INITIALIZE REPOSITORIES ---
+        IntersectionRepository intersectionRepo = new IntersectionRepository();
+        EmergencyRepository emergencyRepo = new EmergencyRepository();
+        TimingRepository timingRepo = new TimingRepository();
+        TrafficRepository trafficRepo = new TrafficRepository();
 
-        // --- 2. CREATE INTERSECTION ---
+        // --- 2. INITIALIZE SERVICES ---
+        IntersectionService intersectionService = new IntersectionService(intersectionRepo);
+        EmergencyService emergencyService = new EmergencyService(intersectionService, emergencyRepo);
+        TimingService timingService = new TimingService(intersectionService, timingRepo);
+        TrafficService trafficService = new TrafficService(intersectionService, trafficRepo);
+
+        // --- 3. INITIALIZE CONTROLLERS ---
+        IntersectionController intersectionController = new IntersectionController(intersectionService);
+        EmergencyController emergencyController = new EmergencyController(emergencyService);
+        TimingController timingController = new TimingController(timingService);
+        TrafficController trafficController = new TrafficController(trafficService);
+
+        // --- 4. CREATE INTERSECTION ---
         int intersectionId = 101;
-        Intersection intersection = intersectionService.createIntersection(intersectionId, "Silk Board Junction");
+        intersectionController.createIntersection(intersectionId, "Silk Board Junction");
+        Intersection intersection = intersectionController.getIntersection(intersectionId);
         System.out.println("\n📍 Created: " + intersection);
 
         // =========================================================================
@@ -33,12 +64,12 @@ public class Main {
         System.out.println("-----------------------------------------------------------");
 
         System.out.println("▶️ Phase 1: Activate NORTH...");
-        intersectionService.advancePhase(intersectionId, Direction.NORTH);
-        intersectionService.displayStatus(intersectionId);
+        intersectionController.advancePhase(intersectionId, Direction.NORTH);
+        intersectionController.displayStatus(intersectionId);
 
         System.out.println("\n▶️ Phase 2: Advance to EAST...");
-        intersectionService.advancePhase(intersectionId, Direction.EAST);
-        intersectionService.displayStatus(intersectionId);
+        intersectionController.advancePhase(intersectionId, Direction.EAST);
+        intersectionController.displayStatus(intersectionId);
 
         // =========================================================================
         // SCENARIO 2: STATE PATTERN ENFORCEMENT & INVALID TRANSITIONS
@@ -65,17 +96,18 @@ public class Main {
         System.out.println("-----------------------------------------------------------");
 
         // Advance to SOUTH phase before emergency
-        intersectionService.advancePhase(intersectionId, Direction.SOUTH);
+        intersectionController.advancePhase(intersectionId, Direction.SOUTH);
         intersection.getCycle().getNextDirection(); // Advance cycle pointer to SOUTH
-        intersectionService.displayStatus(intersectionId);
+        intersectionController.displayStatus(intersectionId);
 
         // Emergency ambulance arrives from WEST!
-        emergencyService.requestEmergency(intersectionId, Direction.WEST, 15);
-        intersectionService.displayStatus(intersectionId);
+        emergencyController.requestEmergency(intersectionId, Direction.WEST, 15);
+        intersectionController.displayStatus(intersectionId);
+        emergencyController.getEmergencyStatus(intersectionId);
 
         // Ambulance clears the intersection -> Restore normal cycle
-        emergencyService.endEmergency(intersectionId);
-        intersectionService.displayStatus(intersectionId);
+        emergencyController.endEmergency(intersectionId);
+        intersectionController.displayStatus(intersectionId);
 
         // =========================================================================
         // SCENARIO 4: VEHICLE COUNTING & DYNAMIC TIMING ADJUSTMENT
@@ -85,20 +117,20 @@ public class Main {
         System.out.println("-----------------------------------------------------------");
 
         // Heavy traffic arrives from NORTH (35 vehicles detected)
-        trafficService.updateVehicleCount(intersectionId, Direction.NORTH, 35);
-        trafficService.updateVehicleCount(intersectionId, Direction.WEST, 3);
+        trafficController.updateVehicleCount(intersectionId, Direction.NORTH, 35);
+        trafficController.updateVehicleCount(intersectionId, Direction.WEST, 3);
 
         // Dynamic timing calculation adjusts green duration
-        timingService.adjustTimingBasedOnTraffic(intersectionId, Direction.NORTH);
-        timingService.adjustTimingBasedOnTraffic(intersectionId, Direction.WEST);
+        timingController.adjustTimingBasedOnTraffic(intersectionId, Direction.NORTH);
+        timingController.adjustTimingBasedOnTraffic(intersectionId, Direction.WEST);
 
         System.out.println("\nUpdated Signal Timings:");
         for (Direction d : Direction.values()) {
-            System.out.println("   " + intersection.getSignalTiming(d));
+            System.out.println("   " + timingController.getSignalTiming(intersectionId, d));
         }
 
         System.out.println("\n=================================================================");
-        System.out.println("🎯 TRAFFIC SIGNAL SYSTEM DEMONSTRATION COMPLETE & VERIFIED!");
+        System.out.println("🎯 TRAFFIC SIGNAL SYSTEM ARCHITECTURE COMPLETE & VERIFIED!");
         System.out.println("=================================================================");
     }
 }
