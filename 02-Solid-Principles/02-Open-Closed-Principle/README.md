@@ -160,12 +160,10 @@ class GermanyTaxCalculator implements TaxCalculator {
 
 ---
 
-## 📊 Summary
+## 🎯 Quick Summary
 
-| Property | Description |
-|---|---|
-| **Core Principle** | Open for extension, closed for modification. |
-| **Primary Mechanism** | Polymorphism, Interfaces, Abstract Classes, Dependency Injection, Strategy Pattern. |
-| **What the Code Demonstrates** | Replacing hardcoded `if-else` country checks with interchangeable `TaxCalculator` strategies injected into `Invoice`. |
-| **Key Benefit** | Add new country tax rules (e.g., `GermanyTaxCalculator`) without modifying a single line of existing `Invoice` code. |
-| **One Memorable Rule** | *"Write code that allows you to add new features by writing new code, not by changing old code."* |
+- **Core Idea:** Software entities should be open for extension, but closed for modification.
+- **Code Demonstrates:** Replacing hardcoded `if-else` country tax checks with interchangeable `TaxCalculator` strategies injected into `Invoice` via Dependency Injection.
+- **LLD Takeaway:** Protect stable core classes from regressions by allowing new behaviors to be introduced through polymorphic extensions rather than modifying existing code.
+- **Memorable Rule:** *"Write code that allows you to add new features by writing new code, not by changing old code."*
+

@@ -81,10 +81,23 @@ class Note {
 
 ---
 
-## 🎯 Summary
+## 🎯 Quick Summary
 
-| Principle | Core Idea | What the Code Demonstrates | LLD Takeaway | One Memorable Rule |
-|---|---|---|---|---|
-| **DRY** | Single source of truth for logic | Extracting tax calculation into `TaxCalculator` | Avoid duplicating business logic across services | *"Change once, update everywhere."* |
-| **KISS** | Simplicity over cleverness | Simplifying boolean delivery eligibility into a one-liner | Write obvious, readable code without excess branching | *"The best code is the simplest code that works."* |
-| **YAGNI** | Build only what's needed now | Minimal `Note` entity without unrequested sync/tagging | Don't build speculative features before they are asked | *"Write code for today, design for tomorrow to change it."* |
+### 1. DRY (Don't Repeat Yourself)
+- **Core Idea:** Every piece of knowledge or business logic must have a single, authoritative representation.
+- **Code Demonstrates:** Centralizing tax calculation logic into `TaxCalculator` to prevent duplicating rates across cart and invoice services.
+- **LLD Takeaway:** Avoid duplicating business logic across services; consolidate into reusable, single-source modules.
+- **Memorable Rule:** *"Change once, update everywhere."*
+
+### 2. KISS (Keep It Simple, Stupid)
+- **Core Idea:** Simplicity should always be the primary goal; avoid convoluted or over-engineered solutions.
+- **Code Demonstrates:** Replacing nested `if-else` flag checks with a direct, single-line boolean expression (`isPrimeMember || orderAmount >= 500`).
+- **LLD Takeaway:** Write obvious, readable code that solves the problem without unnecessary state or branching complexity.
+- **Memorable Rule:** *"The best code is the simplest code that works."*
+
+### 3. YAGNI (You Aren't Gonna Need It)
+- **Core Idea:** Implement only what is actually required today; never build speculative abstractions.
+- **Code Demonstrates:** Building a minimal `Note` model with `addNote` and `getNotes` without unrequested tags, cloud sync, or version history.
+- **LLD Takeaway:** Resist speculative architectural over-engineering; build for today's requirements while keeping code easy to evolve.
+- **Memorable Rule:** *"Write code for today, design for tomorrow to change it."*
+

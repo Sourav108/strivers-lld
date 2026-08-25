@@ -77,11 +77,10 @@ class CompilerCoordinator { ... }
 
 ---
 
-## 🎯 Summary
+## 🎯 Quick Summary
 
-| Property | Description |
-|---|---|
-| **Core Idea** | A class should have only one reason to change (single purpose). |
-| **What the Code Demonstrates** | Refactoring a monolithic compiler into dedicated classes (`DriverCodeGenerator`, `SyntaxChecker`, `TestRunner`, `DatabaseManager`, `UserOutputHandler`, `CompilerCoordinator`). |
-| **LLD Takeaway** | Separate concerns into focused classes and use a coordinator/orchestrator to stitch them together. |
-| **One Memorable Rule** | *"One class, one responsibility, one reason to change."* |
+- **Core Idea:** A class should have one, and only one, reason to change (single responsibility).
+- **Code Demonstrates:** Refactoring a monolithic compiler into focused classes (`DriverCodeGenerator`, `SyntaxChecker`, `TestRunner`, `DatabaseManager`, `UserOutputHandler`, `CompilerCoordinator`).
+- **LLD Takeaway:** Decompose complex workflows into single-purpose components and orchestrate them via a coordinator.
+- **Memorable Rule:** *"One class, one responsibility, one reason to change."*
+
