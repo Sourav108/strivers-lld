@@ -1,48 +1,38 @@
-# 🚀 Striver's Complete Engineering Suite
+# Striver's Low-Level Design (LLD) Course
 
-> A unified, production-grade interview preparation repository covering **Low-Level Design (LLD)**, **High-Level Design (HLD)**, and **Data Structures & Algorithms (DSA)** following the TakeUForward roadmaps.
-
----
-
-## 🗺️ Tracks Navigation
-
-| Track | Directory | Focus & Tech Stack | Scope |
-|---|---|---|:---:|
-| 🧩 **Low-Level Design** | [`01-Introduction-to-LLD/` ... `13-Interview-Problems-Part-3/`](./README.md#1-low-level-design-curriculum-java) | Object-Oriented Design, Gang-of-Four Patterns, Concurrency (Java) | 13 Sections |
-| 🏛️ **High-Level Design** | [`strivers-hld/`](./strivers-hld/README.md) | Distributed Systems, Scalability, Storage Engines, Multi-Region, Staff Scope | 19 Modules |
-| ⚡ **A2Z DSA Sheet** | [`DSA-A2Z-Sheet/`](./DSA-A2Z-Sheet/README.md) | Intuition-first solutions, Brute $\rightarrow$ Better $\rightarrow$ Optimal (C++) | 18 Steps / 474 Problems |
+> 🚀 **Complete Low-Level Design / Object-Oriented Design (OOD) in Java**, covering SOLID principles, Design Patterns, and Real-World Interview Problems.
 
 ---
 
-## 1. 🧩 Low-Level Design Curriculum (Java)
+## 🌟 The Complete Prep Suite
 
-| # | Section | Topics |
-|---|---------|--------|
-| 01 | [**Introduction to LLD**](./01-Introduction-to-LLD) | Introduction, Software Design Principles |
-| 02 | [**SOLID Principles**](./02-Solid-Principles) | SRP, OCP, LSP, ISP, DIP |
-| 03 | [**UML**](./03-UML) | Unified Modeling Language, Class Diagrams |
-| 04 | [**Creational Design Patterns**](./04-Creational-Design-Patterns) | Singleton, Factory, Builder, Abstract Factory, Prototype |
-| 05 | [**Structural Design Patterns**](./05-Structural-Design-Patterns) | Adapter, Decorator, Facade, Composite, Proxy, Bridge, Flyweight |
-| 06 | [**Behavioural Design Patterns**](./06-Behavioural-Design-Patterns) | Iterator, Observer, Strategy, Command, Template, State, CoR, Visitor, Mediator, Memento |
-| 07 | [**Multithreading & Concurrency**](./07-Multithreading-and-Concurrency) | Threads, Thread Pools, Synchronization, Locks, Deadlock, Producer-Consumer |
-| 08 | [**Dependency Injection**](./08-Dependency-Injection) | DI Fundamentals |
-| 09 | [**Exceptions & Error Handling**](./09-Exceptions-and-Error-Handling) | Exception Handling, Resilient Systems |
-| 10 | [**Best Practices in LLD**](./10-Best-Practices-in-LLD) | APIs, Database Design, Interview Approach |
-| 11 | [**Interview Problems (Part-1)**](./11-Interview-Problems-Part-1) | Parking Lot, Logging Framework, Traffic Signal, Vending Machine, Task Management |
-| 12 | [**Interview Problems (Part-2)**](./12-Interview-Problems-Part-2) | PubSub, ATM Machine, Hotel Management |
-| 13 | [**Interview Problems (Part-3)**](./13-Interview-Problems-Part-3) | Elevator, Digital Wallet, Ride Booking, Music Streaming |
+This repository is part of a 3-track interview preparation suite:
+
+| Track | Focus & Language | Repository / Directory |
+|---|---|---|
+| 🧩 **Low-Level Design (LLD)** | OOD, SOLID Principles & Design Patterns in Java | **`strivers-lld`** *(Current Repo)* |
+| 🏛️ **High-Level Design (HLD)** | Senior/Staff Distributed Systems Architecture | [**`strivers-hld`**](https://github.com/Sourav108/strivers-hld) *(Standalone)* |
+| ⚡ **Data Structures & Algorithms** | 474 Problems across 18 Steps in C++ | [**`strivers-dsa`**](https://github.com/Sourav108/strivers-dsa) *(Standalone)* |
 
 ---
 
-## 2. 🏛️ High-Level Design Track (System Design)
+## 📚 Curriculum Breakdown
 
-Full notes, real-world case studies (Netflix, Stripe, Meta, Uber, LinkedIn), and Staff-level problem suites in [`strivers-hld/`](./strivers-hld/README.md).
-
----
-
-## 3. ⚡ Striver's A2Z DSA Sheet (C++)
-
-474 problems across 18 steps with AI prompt workflow, visual dry runs, and C++ implementations in [`DSA-A2Z-Sheet/`](./DSA-A2Z-Sheet/README.md).
+| Section | Topic | Description |
+|:---:|---|---|
+| **01** | [**01-Introduction-to-LLD**](./01-Introduction-to-LLD/) | Core OOPs Concepts & LLD Fundamentals |
+| **02** | [**02-Solid-Design-Principles**](./02-Solid-Design-Principles/) | Single Responsibility, Open/Closed, Liskov, Interface Segregation, Dependency Inversion |
+| **03** | [**03-Creational-Design-Patterns**](./03-Creational-Design-Patterns/) | Singleton, Factory, Abstract Factory, Builder, Prototype |
+| **04** | [**04-Structural-Design-Patterns**](./04-Structural-Design-Patterns/) | Adapter, Decorator, Facade, Proxy, Composite, Bridge, Flyweight |
+| **05** | [**05-Behavioral-Design-Patterns**](./05-Behavioral-Design-Patterns/) | Observer, Strategy, Command, State, Chain of Responsibility, Iterator, Mediator, Memento, Template, Visitor |
+| **06** | [**06-UML-and-Architecture-Diagrams**](./06-UML-and-Architecture-Diagrams/) | Class, Sequence, Use Case, State & Activity Diagrams |
+| **07** | [**07-Interview-Preparation**](./07-Interview-Preparation/) | LLD Framework & Cheat Sheet |
+| **08** | [**08-Interview-Problems-Part-1**](./08-Interview-Problems-Part-1/) | Parking Lot, Tic Tac Toe, Snake and Ladder, Vending Machine, Splitwise |
+| **09** | [**09-Interview-Problems-Part-2**](./09-Interview-Problems-Part-2/) | BookMyShow, Elevator System, Amazon Shopping Cart, ATM Machine, Rate Limiter |
+| **10** | [**10-Concurrency-and-Multithreading**](./10-Concurrency-and-Multithreading/) | Java Threads, Synchronized, Locks, Producer-Consumer, Thread Pool |
+| **11** | [**11-Schema-Design**](./11-Schema-Design/) | ER Diagrams, Normalization (1NF–3NF), Schema Case Studies |
+| **12** | [**12-System-Architecture-and-Design-Patterns**](./12-System-Architecture-and-Design-Patterns/) | Microservices Patterns, Event-Driven, Clean Architecture |
+| **13** | [**13-Interview-Problems-Part-3**](./13-Interview-Problems-Part-3/) | Cricbuzz, Chess, Uber/Ola, Pub-Sub, Logger, File System |
 
 ---
 
