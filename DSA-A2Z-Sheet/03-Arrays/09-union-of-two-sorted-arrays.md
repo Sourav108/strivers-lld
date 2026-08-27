@@ -129,22 +129,20 @@ vector<int> unionOptimal(const vector<int>& a, const vector<int>& b) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to adapt this algorithm to find the INTERSECTION of two sorted arrays?**  
+  **A**: Advance `i` when `a[i] < b[j]`, advance `j` when `b[j] < a[i]`. When `a[i] == b[j]`, append to result (if not duplicate) and advance both `i++` and `j++` in $\mathcal{O}(n + m)$ time.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if one array has size n = 10^7 and the other has size m = 5?**  
+  **A**: Two-pointer takes $\mathcal{O}(n + m) = 10^7$ operations. Instead, iterate through the $m=5$ elements and Binary Search each inside the $10^7$ array in $\mathcal{O}(m \log n) \approx 5 \times 24 \approx 120$ operations — $80,000\times$ faster!
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to find the Symmetric Difference (A XOR B) of two sorted arrays?**  
+  **A**: When `a[i] < b[j]`, take `a[i++]`. When `b[j] < a[i]`, take `b[j++]`. When `a[i] == b[j]`, skip both `i++` and `j++` without adding either.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to handle multi-set union (preserving duplicate counts)?**  
+  **A**: If element $x$ appears 3 times in $A$ and 2 times in $B$, append $x$ exactly $\max(3, 2) = 3$ times in union, or $\min(3, 2) = 2$ times in intersection.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How is this used in database query engines (Sort-Merge Join)?**  
+  **A**: Relational database query engines use Sort-Merge Join to combine two indexed table columns in $\mathcal{O}(n + m)$ time using the identical two-pointer merge traversal.
 
 ## 9. Tags & Related Problems
 

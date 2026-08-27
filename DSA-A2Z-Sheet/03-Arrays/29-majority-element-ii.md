@@ -128,22 +128,20 @@ vector<int> majorityElement2Optimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why can there be at most TWO elements that appear more than floor(n / 3) times?**  
+  **A**: Proof by contradiction: If there were 3 distinct elements each appearing $\ge \lfloor n/3 \rfloor + 1$ times, total elements $\ge 3 \times (n/3 + 1) = n + 3 > n$, which is impossible. Thus at most 2 elements can satisfy the condition.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why is the second verification pass mandatory in Boyer-Moore Majority II?**  
+  **A**: Boyer-Moore only finds potential candidates. If no element appears $> n/3$ (e.g. `[1, 2, 3, 4, 5, 6]`), the algorithm will still output two candidates, which must be rejected by the verification pass.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does this generalize to finding all elements appearing more than floor(n / K) times?**  
+  **A**: Maintain at most $K - 1$ candidate-counter pairs. For each element, if it matches a candidate, increment; if a slot is free, assign; if all $K-1$ slots full, decrement all $K-1$ counters by 1. Total time $\mathcal{O}(n \cdot K)$ and space $\mathcal{O}(K)$.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to prevent candidate collision bugs during initialization?**  
+  **A**: Initialize `el1 = 0, el2 = 1` (distinct values) with `c1 = 0, c2 = 0`. Check `if (x == el1)` first before `else if (c1 == 0)` to prevent the same value from occupying both candidate slots.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: Can this be computed in a streaming distributed system?**  
+  **A**: Yes, the Misra-Gries summary algorithm merges frequency candidate maps across stream workers in $\mathcal{O}(K)$ per merge.
 
 ## 9. Tags & Related Problems
 

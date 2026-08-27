@@ -128,22 +128,20 @@ vector<int> printMaxSubarrayOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How do we track the starting index `start` correctly when `currentSum` resets?**  
+  **A**: Whenever `currentSum == 0`, set `start = i`. When `currentSum + nums[i] > maxSum`, update `ansStart = start` and `ansEnd = i`.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if there are multiple subarrays with the exact same maximum sum?**  
+  **A**: Strict inequality `currentSum > maxSum` retains the *first* occurring maximum subarray; `>=` captures the *last* occurring maximum subarray.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to return the subarray indices with O(1) extra memory without allocating vectors?**  
+  **A**: Return `std::pair<int, int> {ansStart, ansEnd}` containing the start and end indices in $\mathcal{O}(1)$ space; the caller slices the array view directly.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to solve this in a Doubly Linked List?**  
+  **A**: Traverse nodes maintaining `Node* startNode` and `Node* ansStart, *ansEnd` pointers with the same running accumulator logic in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to reconstruct the bounding box for the Maximum Submatrix in 2D?**  
+  **A**: Track $(r_1, r_2)$ from the outer loops and $(c_1, c_2)$ from the 1D Kadane tracker on compressed columns, returning the rectangle coordinates $[r_1, c_1, r_2, c_2]$.
 
 ## 9. Tags & Related Problems
 

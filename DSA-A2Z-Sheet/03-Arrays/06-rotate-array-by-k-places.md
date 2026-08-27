@@ -115,22 +115,20 @@ void rotateOptimal(vector<int>& nums, int k) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does the 3-Step Reversal Algorithm work mathematically?**  
+  **A**: Let the array be split into two parts $A = \text{nums}[0..n-k-1]$ and $B = \text{nums}[n-k..n-1]$. We want the result $BA$. Reversing $A$ gives $A^R$, reversing $B$ gives $B^R$, giving $A^R B^R$. Reversing the whole array gives $(A^R B^R)^R = (B^R)^R (A^R)^R = BA$.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What is the Juggling Algorithm (Block Swap) approach using GCD(n, k)?**  
+  **A**: The array elements form $\gcd(n, k)$ independent cyclic permutation sets. We traverse each cycle by jumping $k$ steps at a time with a temporary variable, performing exactly $n$ moves in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What happens when k is larger than n or negative?**  
+  **A**: Normalize $k = (k \% n + n) \% n$. This handles $k > n$ and converts negative rotations (left rotations) into equivalent positive right rotations.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can array rotation be done in O(1) time in system design?**  
+  **A**: Yes, in a Circular Buffer / Ring Buffer data structure, rotation is $\mathcal{O}(1)$ by simply shifting the `headIndex = (headIndex + k) % n` pointer without moving any elements in memory.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: Can we parallelize the reversal algorithm?**  
+  **A**: Yes, each of the three `std::reverse` operations is embarrassingly parallel: independent CPU threads swap symmetric index pairs `(start + i, end - i)` concurrently.
 
 ## 9. Tags & Related Problems
 

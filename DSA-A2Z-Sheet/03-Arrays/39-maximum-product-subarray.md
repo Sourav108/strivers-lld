@@ -122,22 +122,20 @@ int maxProductOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does the Prefix and Suffix scan algorithm work mathematically?**  
+  **A**: If total negative numbers is even, the product of the whole array is positive. If odd, dropping either the first negative (leaving a suffix product) or dropping the last negative (leaving a prefix product) maximizes the product. 0s act as boundaries resetting prefix/suffix to 1.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How does Kadane's two-variable Min/Max DP work?**  
+  **A**: Maintain `maxProd` and `minProd`. When multiplying by negative $x$, max becomes min and min becomes max. So swap `maxProd` and `minProd` before multiplying: `maxProd = max(x, maxProd * x)`, `minProd = min(x, minProd * x)` in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does the algorithm handle zeroes in the array?**  
+  **A**: Whenever `prefix == 0`, reset `prefix = 1`. A zero splits the problem into independent subarrays before and after the zero; `maxProd = max(maxProd, 0)` ensures 0 itself is considered as a candidate.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if the array contains fractional numbers between 0 and 1?**  
+  **A**: Multiplying by fractions reduces the magnitude. In this case, single elements might be larger than products. Kadane's `max(x, maxProd * x)` handles this correctly.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to return the actual subarray that produces the maximum product?**  
+  **A**: Track the starting and ending indices whenever `maxProd` is updated in the DP pass, recording `bestStart` and `bestEnd` in $\mathcal{O}(1)$ space.
 
 ## 9. Tags & Related Problems
 

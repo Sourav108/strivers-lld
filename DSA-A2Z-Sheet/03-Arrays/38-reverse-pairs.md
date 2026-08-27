@@ -143,22 +143,20 @@ int reversePairs(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why CANNOT we count reverse pairs during the standard merge step like normal inversions?**  
+  **A**: Because the reverse pair condition $nums[i] > 2 \cdot nums[j]$ is not monotonic with the merge condition $nums[i] > nums[j]$. Elements merged in standard order would break the pointer invariance, requiring a separate counting pass before merging.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why is the `countPairs` pass O(n) instead of O(n^2)?**  
+  **A**: Because both left and right subarrays are sorted. As pointer `i` moves forward in the left half, pointer `right` in the right half only moves forward monotonically. Pointer `right` never resets, giving $\mathcal{O}(n)$ total steps.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: Why is 64-bit `(long long)` casting mandatory for `2LL * nums[right]`?**  
+  **A**: If $nums[right] = 1.5 \times 10^9$, $2 \cdot nums[right] = 3 \times 10^9$, which exceeds 32-bit signed `INT_MAX` ($2.14 \times 10^9$) causing integer overflow. `2LL * nums[right]` forces 64-bit arithmetic.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to solve Reverse Pairs using a Binary Indexed Tree (Fenwick Tree)?**  
+  **A**: Collect all values $x$ and $2x$, coordinate compress them into rank array, iterate backwards querying count of elements smaller than $nums[i]/2.0$, and insert $nums[i]$ into BIT in $\mathcal{O}(n \log n)$ time.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if the condition is `nums[i] > K * nums[j]` for any arbitrary constant K?**  
+  **A**: The modified merge sort algorithm works identically for any constant $K > 0$ with zero changes to asymptotic $\mathcal{O}(n \log n)$ complexity.
 
 ## 9. Tags & Related Problems
 

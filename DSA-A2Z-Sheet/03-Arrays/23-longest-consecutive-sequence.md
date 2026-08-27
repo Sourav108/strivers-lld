@@ -152,22 +152,20 @@ int longestConsecutiveOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does checking `!st.count(x - 1)` guarantee O(n) total time complexity?**  
+  **A**: Because the inner `while` loop only executes for numbers that are the *head* of a streak. Every element in any streak is visited at most twice (once in outer loop, once in inner loop), giving $\mathcal{O}(2n) = \mathcal{O}(n)$ total operations.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How can Disjoint Set Union (DSU) solve this problem in an online dynamic stream?**  
+  **A**: When a new number $x$ arrives, add it to DSU and union with $x - 1$ (if present) and $x + 1$ (if present). Track component sizes to maintain maximum streak dynamically in $\mathcal{O}(\alpha(n))$ per insertion.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if the input contains duplicate numbers like `[1, 2, 0, 1]`?**  
+  **A**: Inserting elements into `std::unordered_set` automatically filters duplicates, correctly finding streak `[0, 1, 2]` of length 3.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to protect `std::unordered_set` in C++ against adversarial worst-case O(n^2) hash collision attacks?**  
+  **A**: Provide a custom hash functor using a randomized 64-bit seed (e.g. `splitmix64` with `chrono::steady_clock`) to prevent crafted anti-hash inputs from degrading bucket chains.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: Can this be solved with O(1) extra space on unsorted input?**  
+  **A**: Sort the array in $\mathcal{O}(n \log n)$ time, then do a single pass tracking `currentStreak` and skipping duplicates in $\mathcal{O}(1)$ space.
 
 ## 9. Tags & Related Problems
 

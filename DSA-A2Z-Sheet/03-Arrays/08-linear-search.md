@@ -114,22 +114,20 @@ int searchOptimal(const vector<int>& nums, int k) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What is Sentinel Linear Search and how does it optimize CPU cycles?**  
+  **A**: Set `nums[n-1] = target` as a sentinel. The loop condition only checks `nums[i] == target` without checking `i < n` on every iteration, eliminating $n$ loop boundary comparisons.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: When is Linear Search preferred over Binary Search even on sorted data?**  
+  **A**: For small arrays ($n \le 16-32$), Linear Search is often faster than Binary Search due to continuous CPU cache line prefetching (L1 cache hits) and zero branch mispredictions.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does Move-To-Front / Transposition heuristic optimize repeated searches?**  
+  **A**: In self-organizing lists, whenever an element is found, swap it with the front or its predecessor. Frequently accessed elements gravitate to the head, reducing average search time to $\mathcal{O}(1)$.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to implement Linear Search using SIMD instructions in C++?**  
+  **A**: Broadcast the target into a 256-bit AVX2 register (`_mm256_set1_epi32`), compare with 8 array elements simultaneously (`_mm256_cmpeq_epi32`), and use `_mm256_movemask_epi8` with `__builtin_ctz` to locate the match index.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to parallelize linear search across multiple threads?**  
+  **A**: Divide the array into $P$ chunks. Each thread searches its chunk; the first thread finding target sets an `std::atomic<int> foundIdx` and signals other threads to cancel.
 
 ## 9. Tags & Related Problems
 

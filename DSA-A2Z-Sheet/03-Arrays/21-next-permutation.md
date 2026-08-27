@@ -115,22 +115,20 @@ void nextPermutationOptimal(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why do we REVERSE the suffix from i+1 to n-1 instead of sorting it?**  
+  **A**: Because by definition of the pivot search, `nums[i+1..n-1]` is in strictly non-increasing (descending) order. Reversing a descending range in $\mathcal{O}(n)$ time automatically transforms it into ascending order without sorting overhead.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to compute the PREVIOUS permutation (lexicographically smaller)?**  
+  **A**: Symmetric logic: find first $i$ where `nums[i] > nums[i+1]`, find largest $j$ where `nums[j] < nums[i]`, swap `nums[i]` and `nums[j]`, and reverse suffix `nums[i+1..n-1]`.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if the array is already at the maximum permutation `[3, 2, 1]`?**  
+  **A**: Index $i$ reaches $-1$ (no pivot). The algorithm skips the swap step and reverses the entire array to `[1, 2, 3]`, which is the minimal permutation as required.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to find the K-th Permutation directly without calling nextPermutation K times (LeetCode 60)?**  
+  **A**: Use the Factorial Number System: for $n$ numbers, there are $(n-1)!$ permutations starting with each digit. Compute index $k / (n-1)!$, pick that digit from a list, update $k = k \% (n-1)!$, and repeat in $\mathcal{O}(n^2)$ time.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How many unique permutations exist for an array with duplicates?**  
+  **A**: Formula $\frac{n!}{c_1! \cdot c_2! \dots c_k!}$ where $c_i$ is the frequency of the $i$-th distinct element.
 
 ## 9. Tags & Related Problems
 

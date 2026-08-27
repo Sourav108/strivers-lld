@@ -110,22 +110,20 @@ int largestOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How would you find the maximum element in an array distributed across 1,000 machines (MapReduce / Distributed System)?**  
+  **A**: Run a local linear scan on each of the 1,000 worker nodes to compute local maximums in $\mathcal{O}(n/1000)$ parallel time. Then stream the 1,000 local maximums to a central reducer node to compute the global maximum in $\mathcal{O}(1000)$ time.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if elements arrive in an infinite real-time stream?**  
+  **A**: Maintain a single state variable `currentMax = INT_MIN`. As each stream element $x$ arrives, update `currentMax = max(currentMax, x)` in $\mathcal{O}(1)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: Can we use CPU SIMD vectorization (AVX-512) to speed up the search in C++?**  
+  **A**: Yes, load 16 32-bit integers into a 512-bit vector register (`__m512i`) and use `_mm512_max_epi32` instructions to compute 16 parallel maximums per CPU clock cycle, achieving a theoretical $\approx 16\times$ speedup.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What is the theoretical minimum number of comparisons needed to find the maximum among $n$ elements?**  
+  **A**: Exactly $n - 1$ comparisons. In an adversary tournament model, every element except the maximum must lose at least one comparison, giving an information-theoretic lower bound of $\Omega(n)$.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to simultaneously find both the Maximum and Minimum elements with the absolute fewest comparisons?**  
+  **A**: Process elements in pairs $(x, y)$: compare $x$ and $y$ (1 comparison), compare the larger with `maxVal` (1 comparison), and the smaller with `minVal` (1 comparison). This requires $\approx 3 \lfloor n/2 \rfloor \approx 1.5n$ comparisons instead of $2n$.
 
 ## 9. Tags & Related Problems
 

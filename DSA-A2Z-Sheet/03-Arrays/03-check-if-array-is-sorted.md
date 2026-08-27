@@ -119,22 +119,20 @@ bool checkOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to find the exact rotation index K if the array is confirmed sorted and rotated?**  
+  **A**: The rotation index $K$ is the index of the minimum element, which is $(i + 1) \% n$ where `nums[i] > nums[(i+1)%n]`. If `countDrops == 0`, $K = 0$.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why does counting `nums[i] > nums[(i+1)%n] <= 1` work for an unrotated sorted array?**  
+  **A**: For an unrotated sorted array `[1, 2, 3]`, `nums[0] < nums[1] < nums[2]`, but `nums[2] > nums[0]` on the circular wrap, producing exactly 1 drop. For all-equal array `[1, 1, 1]`, drops = 0. Both satisfy $\le 1$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does this behave with duplicates like `[2, 2, 2, 3, 2, 2]`?**  
+  **A**: The single drop condition `nums[i] > nums[(i+1)%n] <= 1` still holds correctly: the only drop is `3 > 2`, so it correctly returns `true`.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can we determine if a rotated array is sorted in sub-linear time?**  
+  **A**: No, because even a single out-of-order element hidden anywhere in the array would invalidate the property, requiring $\Omega(n)$ worst-case checks.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How does this problem relate to Search in Rotated Sorted Array (LeetCode 33)?**  
+  **A**: The single drop point divides the rotated array into two sorted subarrays. Binary search determines which half is sorted by checking `nums[low] <= nums[mid]`.
 
 ## 9. Tags & Related Problems
 

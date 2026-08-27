@@ -126,22 +126,20 @@ vector<int> rearrangeOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What if the count of positive and negative elements is NOT equal?**  
+  **A**: Segregate into `pos` and `neg` lists. Alternate until the smaller list exhausts, then append remaining elements to the end in $\mathcal{O}(n)$ time and $\mathcal{O}(n)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Can we solve this in O(1) extra space while preserving relative order?**  
+  **A**: Preserving order in $\mathcal{O}(1)$ space requires Right-Rotation / Block-Merge in $\mathcal{O}(n \log^2 n)$ or $\mathcal{O}(n^2)$ time. In practice, $\mathcal{O}(n)$ auxiliary memory is standard for $\mathcal{O}(n)$ time.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if relative order does NOT matter?**  
+  **A**: Use Two Pointers in $\mathcal{O}(1)$ space: `pos = 0`, `neg = 1`. Advance `pos` by 2 while `nums[pos] > 0`, advance `neg` by 2 while `nums[neg] < 0`. Swap `nums[pos]` and `nums[neg]` when both are misplaced.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to rearrange such that all negatives come before all positives in O(1) space?**  
+  **A**: Use two-pointer QuickSort partition: pointer `j` tracks positive boundary, swap `nums[i]` with `nums[j++]` when `nums[i] < 0` in $\mathcal{O}(n)$ time.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to parallelize array rearrangement for n = 10^9?**  
+  **A**: Count positive elements in parallel chunks, compute target destination offsets via prefix sums, and write elements to even/odd destination positions in parallel.
 
 ## 9. Tags & Related Problems
 

@@ -120,22 +120,20 @@ void rotateMatrixOptimal(vector<vector<int>>& mat) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to rotate a matrix 90 degrees ANTI-CLOCKWISE in-place?**  
+  **A**: Two ways: 1) Reverse each row, then Transpose. 2) Transpose, then Reverse each column (reverse across vertical centerline).
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to rotate a matrix 180 degrees in-place?**  
+  **A**: Reverse all rows top-to-bottom, then reverse each individual row left-to-right in $\mathcal{O}(n^2)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What is the 4-way cyclic swap algorithm for rotating layer by layer?**  
+  **A**: For each concentric layer from outer to inner, perform a 4-way variable cycle: `temp = top[i]; top[i] = left[i]; left[i] = bottom[i]; bottom[i] = right[i]; right[i] = temp;` in $\mathcal{O}(n^2)$ time and $\mathcal{O}(1)$ space.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Why is in-place rotation impossible for rectangular matrices ($M \times N$ where $M \neq N$)?**  
+  **A**: Because rotating changes matrix dimensions from $M \times N$ to $N \times M$, requiring dynamic reallocation of memory layout unless complex in-place cycle leader permutation is used.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How does CPU cache hierarchy affect matrix transpose performance?**  
+  **A**: Standard transpose accesses column elements with stride $N$, causing L1 cache misses. **Cache Tiling / Blocking** (processing $32 \times 32$ sub-matrices that fit in L1 cache) speeds up transpose by $4-8\times$.
 
 ## 9. Tags & Related Problems
 

@@ -123,22 +123,20 @@ vector<int> spiralOrderOptimal(const vector<vector<int>>& mat) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why are the conditional checks `if (top <= bottom)` and `if (left <= right)` required inside the while loop?**  
+  **A**: In rectangular matrices (e.g. $1 \times 5$ or $3 \times 1$), after sweeping right and down, `top` or `right` boundaries shift. Without re-checking, the bottom-left and left-top sweeps would traverse already-visited rows/columns twice.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to generate an N x N matrix filled with 1 to N^2 in spiral order (Spiral Matrix II)?**  
+  **A**: Use the identical 4-boundary logic with a counter `val = 1..n^2`, writing `mat[top][j] = val++` etc. in $\mathcal{O}(n^2)$ time.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to find the K-th element in spiral order in O(1) time without visiting previous elements?**  
+  **A**: Calculate how many complete outer rings precede the $K$-th element, compute the perimeter of outer rings using arithmetic progressions, and jump directly to the target coordinate.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to implement spiral traversal using a direction vector array?**  
+  **A**: Use `dr = {0, 1, 0, -1}`, `dc = {1, 0, -1, 0}` and `dir = 0`. Move $(r + dr[dir], c + dc[dir])$. When hitting a boundary or visited cell, turn right: `dir = (dir + 1) % 4`.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How does spiral traversal generalize to 3D tensors (Cube traversal)?**  
+  **A**: Traverse 6 outer faces of the 3D bounding box iteratively, shrinking `xMin, xMax, yMin, yMax, zMin, zMax` boundaries.
 
 ## 9. Tags & Related Problems
 

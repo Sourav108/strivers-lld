@@ -127,22 +127,20 @@ vector<int> findMissingRepeatingOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How do the algebraic equations derive A (repeating) and B (missing)?**  
+  **A**: 1) $S - S_N = A - B$. 2) $S^2 - S^2_N = A^2 - B^2 = (A - B)(A + B)$. Dividing (2) by (1) gives $A + B = \frac{S^2 - S^2_N}{S - S_N}$. Solving the linear system gives $A = \frac{(A-B) + (A+B)}{2}$ and $B = (A+B) - A$ in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How does the Bitwise XOR method work without integer overflow risks?**  
+  **A**: Compute $X = (\bigoplus_{i=1}^n i) \oplus (\bigoplus x \in \text{nums})$. $X = A \oplus B$. Find rightmost set bit $D = X \& (-X)$. Partition numbers $1..n$ and array elements into two groups based on bit $D$. XORing each group isolates $A$ and $B$, verified by a single scan.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What is the Array Index Negation method?**  
+  **A**: For each $x \in \text{nums}$, negate `nums[abs(x) - 1]`. If `nums[abs(x) - 1]` is already negative, $x$ is the repeating number. Then, the only index $i$ with a positive value corresponds to missing number $i + 1$.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Why is the Index Negation method not always permitted in interviews?**  
+  **A**: Because it mutates the input array. If the array is read-only or in const memory, the Maths or XOR approaches must be used.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if the numbers are in range [0, n-1] instead of [1, n]?**  
+  **A**: Adjust formulas: $S_N = \frac{(n-1)n}{2}$ and $S^2_N = \frac{(n-1)n(2n-1)}{6}$, or map indices $x \to x+1$.
 
 ## 9. Tags & Related Problems
 

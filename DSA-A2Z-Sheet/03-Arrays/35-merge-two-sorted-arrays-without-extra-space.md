@@ -117,22 +117,20 @@ void mergeSortedOptimal(vector<int>& nums1, int m, vector<int>& nums2, int n) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What is the Gap Method (Knuth Shell Sort gap) for merging two disjoint arrays?**  
+  **A**: Initialize $\text{gap} = \lceil (n + m) / 2 \rceil$. Compare elements at distance $\text{gap}$, swap if out of order, and reduce $\text{gap} = \lceil \text{gap} / 2 \rceil$ until 0. Sorts both arrays in $\mathcal{O}((n+m) \log(n+m))$ time and strictly $\mathcal{O}(1)$ auxiliary space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: In LeetCode 88 (nums1 has size m + n), why is back-to-front merging optimal?**  
+  **A**: Because the free capacity is at the back of `nums1` (`nums1[m..m+n-1]`). Placing the largest elements at the back first guarantees that we never overwrite unprocessed elements in `nums1[0..m-1]`, achieving $\mathcal{O}(m+n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does the swap-and-sort method work for two separate arrays A and B?**  
+  **A**: Set pointer `i` at end of $A$ and `j` at start of $B$. If $A[i] > B[j]$, swap them, `i--`, `j++`. When $A[i] \le B[j]$, stop and sort $A$ and $B$ individually in $\mathcal{O}(n \log n + m \log m)$ time.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can two disjoint sorted arrays be merged in O(m+n) time and strictly O(1) space?**  
+  **A**: Yes, using complex in-place block-merge algorithms (e.g. SymMerge / Huang-Langston algorithm), but implementation constant factor is high.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How is this used in External Merge Sort for multi-gigabyte files on disk?**  
+  **A**: Memory-constrained systems sort initial chunks in RAM, write sorted runs to disk, and merge runs using multi-way min-heap merge.
 
 ## 9. Tags & Related Problems
 

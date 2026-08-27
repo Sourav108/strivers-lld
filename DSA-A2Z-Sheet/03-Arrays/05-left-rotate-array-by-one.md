@@ -114,22 +114,20 @@ void rotateByOneOptimal(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does calling `rotateByOne` K times take O(n * K) and how does Reversal optimize it?**  
+  **A**: Calling it $K$ times moves $n$ elements $K$ times (total $n \cdot K$ memory writes). The Reversal Algorithm achieves rotation by $K$ in exactly $2n$ element swaps ($\mathcal{O}(n)$ time).
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to right rotate by one position instead of left rotate?**  
+  **A**: Save `temp = nums[n-1]`, iterate backward from $n-1$ down to 1 setting `nums[i] = nums[i-1]`, and set `nums[0] = temp`.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does C++ STL `std::rotate` implement rotation?**  
+  **A**: `std::rotate(first, middle, last)` chooses between cyclic permutation (for random access iterators), reversal algorithm, or block swap depending on iterator category.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to rotate a matrix boundary by one position clockwise?**  
+  **A**: Treat the 4 outer edges as a 1D unrolled array, perform a 1-step circular shift, and write the values back to the top, right, bottom, and left boundaries.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if the array is stored on a disk file too large to fit in memory?**  
+  **A**: Use memory-mapped files (`mmap`) or read blocks into a small RAM buffer, write the shifted blocks sequentially, and append the first element to the end block.
 
 ## 9. Tags & Related Problems
 

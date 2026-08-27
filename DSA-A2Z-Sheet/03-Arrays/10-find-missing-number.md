@@ -139,22 +139,20 @@ int missingOptimal(const vector<int>& nums, int n) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why is the XOR approach preferred over the Gauss Sum formula n*(n+1)/2?**  
+  **A**: For $n = 10^5$, $\frac{n(n+1)}{2} \approx 5 \times 10^9$, which overflows a standard 32-bit signed integer `int` and requires `long long`. The bitwise XOR approach never overflows any integer boundary.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if TWO numbers are missing instead of one?**  
+  **A**: Compute $X = \text{XOR of all } 1..n \oplus \text{XOR of array}$. $X = A \oplus B$. Find the rightmost set bit in $X$, partition numbers into two buckets based on that bit, and XOR each bucket to isolate $A$ and $B$ in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if the array is already sorted?**  
+  **A**: Use Binary Search in $\mathcal{O}(\log n)$ time: if `nums[mid] == mid + 1`, the left half is complete and the missing number is in the right half (`low = mid + 1`); otherwise `high = mid - 1`.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How does this adapt to a network stream with packet loss?**  
+  **A**: Initialize `xorSum = 0`. XOR packet IDs as they are sent, and XOR received packet IDs. At the end of the batch, `xorSum` contains the exact dropped packet ID in $\mathcal{O}(1)$ extra memory.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if numbers are in the range [0, n] (LeetCode 268)?**  
+  **A**: XOR all integers from $0$ to $n$ against all elements in the array; the surviving value is the missing integer.
 
 ## 9. Tags & Related Problems
 

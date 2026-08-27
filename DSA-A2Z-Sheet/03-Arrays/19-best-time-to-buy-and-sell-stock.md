@@ -117,22 +117,20 @@ int maxProfitOptimal(const vector<int>& prices) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How does this change if you can make UNLIMITED transactions (Stock II - LeetCode 122)?**  
+  **A**: Greedy approach: capture every upward price movement. Whenever `prices[i] > prices[i-1]`, add `prices[i] - prices[i-1]` to total profit in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if you can make at most TWO transactions (Stock III - LeetCode 123)?**  
+  **A**: Maintain 4 variables in a single pass: `buy1 = max(buy1, -p)`, `sell1 = max(sell1, buy1 + p)`, `buy2 = max(buy2, sell1 - p)`, `sell2 = max(sell2, buy2 + p)` in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if there is a 1-day COOLDOWN after selling (Stock with Cooldown - LeetCode 309)?**  
+  **A**: Use State Machine DP with 3 states: `held`, `sold`, `reset`. `held = max(held, reset - p)`, `sold = held + p`, `reset = max(reset, prevSold)` in $\mathcal{O}(n)$ time.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if there is a TRANSACTION FEE per trade (LeetCode 714)?**  
+  **A**: Maintain `held = max(held, cash - price)` and `cash = max(cash, held + price - fee)` in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How does this problem map directly to Kadane's algorithm?**  
+  **A**: Construct difference array $D[i] = \text{prices}[i] - \text{prices}[i-1]$. Finding maximum profit between buy day $i$ and sell day $j$ is mathematically identical to finding the maximum contiguous subarray sum in $D$.
 
 ## 9. Tags & Related Problems
 

@@ -139,22 +139,20 @@ long long numberOfInversions(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does `invCount += (mid - left + 1)` correctly count inversions in Merge Sort?**  
+  **A**: Because the left subarray `arr[low..mid]` is sorted. If `arr[left] > arr[right]`, then every subsequent element from `left` up to `mid` is also strictly greater than `arr[right]`, contributing $(mid - left + 1)$ inversion pairs simultaneously in $\mathcal{O}(1)$ time.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to count inversions using a Fenwick Tree (Binary Indexed Tree)?**  
+  **A**: Coordinate compress elements to range $[1..n]$. Iterate backward from right to left: query prefix sum of elements strictly smaller than `nums[i]` in $\mathcal{O}(\log n)$, then insert `nums[i]` into the Fenwick tree. Total time $\mathcal{O}(n \log n)$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What is the relation between Inversion Count and Bubble Sort swaps?**  
+  **A**: The number of inversions in an array is strictly equal to the number of adjacent swaps executed by Bubble Sort to sort the array.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What is the maximum and minimum possible inversion count for array of size n?**  
+  **A**: Minimum is 0 (already sorted array). Maximum is $\frac{n(n-1)}{2}$ (reverse sorted array where every pair forms an inversion).
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: Can we count inversions without modifying the original array?**  
+  **A**: Yes, pass a copy of the array into `mergeSortCount`, or use a Fenwick Tree which only reads the array values.
 
 ## 9. Tags & Related Problems
 

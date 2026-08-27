@@ -121,22 +121,20 @@ int maxLenZeroSumOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why does a repeating prefix sum guarantee that the intermediate subarray sums to 0?**  
+  **A**: Let $S_i$ be prefix sum up to index $i$ and $S_j$ up to $j$ ($i < j$). $S_j = S_i + \sum_{k=i+1}^j nums[k]$. If $S_j = S_i$, then $\sum_{k=i+1}^j nums[k] = 0$. The subarray $nums[i+1..j]$ has sum 0 and length $j - i$.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why do we only store the FIRST occurrence of a prefix sum in the hash map?**  
+  **A**: Because we want to maximize length $j - i$. Keeping the smallest possible index $i$ for any prefix sum guarantees the longest span when that sum is encountered again at index $j$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does this solve Contiguous Array (LeetCode 525 - Equal 0s and 1s)?**  
+  **A**: Transform the array: replace all 0s with -1s. The problem is now identical to finding the longest subarray with sum 0 in $\mathcal{O}(n)$ time and $\mathcal{O}(n)$ space.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if the array contains only non-negative integers?**  
+  **A**: If all elements are non-negative, any subarray with sum 0 must consist entirely of zeroes. The problem reduces to finding the maximum consecutive zeroes in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to return the actual elements of the longest subarray with 0 sum?**  
+  **A**: Record `bestStart = prefixMap[sum] + 1` and `bestEnd = i` whenever a new maximum length is found, then return `vector<int>(nums.begin() + bestStart, nums.begin() + bestEnd + 1)`.
 
 ## 9. Tags & Related Problems
 

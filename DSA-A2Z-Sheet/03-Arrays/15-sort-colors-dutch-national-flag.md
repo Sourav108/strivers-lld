@@ -142,22 +142,20 @@ void sortColorsOptimal(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why do we NOT increment `mid` when swapping with `high` (`swap(nums[mid], nums[high])`)?**  
+  **A**: Because the element swapped from `high` was previously unexamined; it could be 0, 1, or 2. We must keep `mid` at the same index to inspect it in the next iteration.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why DO we increment `mid` when swapping with `low` (`swap(nums[low], nums[mid])`)?**  
+  **A**: Because `low <= mid` and all elements before `mid` have already been processed. The element swapped from `low` is guaranteed to be 1, which is valid at `mid`.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does Dutch National Flag generalize to 3-Way QuickSort (Fat Partitioning)?**  
+  **A**: In QuickSort with many duplicate keys, 3-way partitioning divides the array into $[< \text{pivot}]$, $[== \text{pivot}]$, and $[> \text{pivot}]$. Recursion only recurses on the strictly smaller and strictly larger subarrays, reducing QuickSort from $\mathcal{O}(n^2)$ to $\mathcal{O}(n)$ on duplicate arrays.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to generalize Dutch National Flag to 4 colors (0, 1, 2, 3)?**  
+  **A**: Use 4 pointers (`p0, p1, p2, p3`) or execute two passes of 3-way partitioning in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How would you sort 0s, 1s, and 2s in a Singly Linked List?**  
+  **A**: Create 3 dummy heads (`zeroHead, oneHead, twoHead`), iterate the list appending nodes to their respective dummy chains in $\mathcal{O}(n)$ time, and link `zeroTail->next = oneHead->next; oneTail->next = twoHead->next`.
 
 ## 9. Tags & Related Problems
 

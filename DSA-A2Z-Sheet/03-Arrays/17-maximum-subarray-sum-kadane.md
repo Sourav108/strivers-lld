@@ -119,22 +119,20 @@ int maxSubArrayOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How does Kadane's algorithm handle arrays with ALL NEGATIVE numbers?**  
+  **A**: Initialize `maxSum = INT_MIN`. Update `maxSum = max(maxSum, currentSum)` *before* checking `if (currentSum < 0) currentSum = 0`. This correctly captures the single least-negative element (e.g. `[-5, -2, -8] -> -2`).
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to find Maximum Subarray Sum on a CIRCULAR array (LeetCode 918)?**  
+  **A**: The circular max subarray is $\max(\text{KadaneMax}, \text{TotalSum} - \text{KadaneMin})$. If all numbers are negative (`TotalSum == KadaneMin`), return `KadaneMax`.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does Kadane's algorithm generalize to 2D matrices (Maximum Submatrix Sum)?**  
+  **A**: Fix row pairs $(r_1, r_2)$, compress columns into a 1D array of column sums, and run 1D Kadane's algorithm. Runs in $\mathcal{O}(R^2 \cdot C)$ time and $\mathcal{O}(C)$ space.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can Kadane's algorithm be parallelized using Divide and Conquer?**  
+  **A**: Yes, each tree node computes 4 values: `totalSum`, `maxPrefixSum`, `maxSuffixSum`, and `maxSubarraySum`. Two nodes merge in $\mathcal{O}(1)$, allowing $\mathcal{O}(n)$ work in $\mathcal{O}(\log n)$ parallel depth.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if we can delete at most ONE element from the subarray to maximize sum (LeetCode 1186)?**  
+  **A**: Maintain two DP states: `maxNoDelete` (standard Kadane) and `maxOneDelete = max(prevNoDelete, prevOneDelete + x)`. Max overall is the peak across both states in $\mathcal{O}(n)$ time.
 
 ## 9. Tags & Related Problems
 

@@ -123,22 +123,20 @@ vector<int> leadersOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why is scanning right-to-left O(n) while scanning left-to-right is O(n^2)?**  
+  **A**: Scanning right-to-left maintains the maximum of the suffix in $\mathcal{O}(1)$ time per step. Scanning left-to-right requires re-scanning the entire remaining right suffix for every element.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to return leaders in their original left-to-right order without calling `reverse()`?**  
+  **A**: Store leaders in an `std::vector` and reverse it, or push into an `std::stack` and pop to output, or prepend to a Singly Linked List in $\mathcal{O}(1)$ per insertion.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does the Leaders problem relate to Monotonic Stacks (Next Greater Element)?**  
+  **A**: An element is a leader if and only if its Next Greater Element to the right does not exist. A monotonic decreasing stack naturally identifies all leaders.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if the definition requires strictly greater (`>`) vs greater than or equal (`>=`)?**  
+  **A**: Change `nums[i] > maxFromRight` to `nums[i] >= maxFromRight`. For `[10, 10, 10]`, `>` returns `[10]` whereas `>=` returns `[10, 10, 10]`.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to find 2D peak / leader elements in an N x M matrix?**  
+  **A**: Binary Search on columns: find global maximum of middle column in $\mathcal{O}(M)$, check left and right neighbors, and recurse on the half containing a larger neighbor in $\mathcal{O}(M \log N)$ time.
 
 ## 9. Tags & Related Problems
 

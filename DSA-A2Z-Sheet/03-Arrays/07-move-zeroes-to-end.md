@@ -121,22 +121,20 @@ void moveZeroesOptimal(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to minimize the total number of write operations if the array has very few zeroes?**  
+  **A**: Only perform `swap(nums[i], nums[j])` when `i != j`. If the array has zero zeroes, `i == j` always and 0 writes occur.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if we must move zeroes to the BEGINNING instead of the end while maintaining relative order?**  
+  **A**: Scan from right to left: initialize `j = n - 1` at the last zero. Iterate `i` from $n - 1$ down to 0, swapping `nums[i]` with `nums[j]` whenever `nums[i] != 0` and decrementing `j`.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does this problem relate to the partition step of QuickSort?**  
+  **A**: It is a binary partition where elements are split based on the predicate `x != 0` vs `x == 0`, identical to Lomuto partitioning with stable preservation of non-zero elements.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if relative order does NOT matter?**  
+  **A**: Use two pointers from opposite ends: `left` at 0, `right` at $n-1$. When `nums[left] == 0`, swap with `nums[right--]`. This takes at most $Z$ writes where $Z$ is the count of zeroes.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to perform this in an immutable stream / functional pipeline?**  
+  **A**: Filter elements into a stream `nums.stream().filter(x -> x != 0)` concatenated with `Stream.generate(() -> 0).limit(zeroCount)`.
 
 ## 9. Tags & Related Problems
 

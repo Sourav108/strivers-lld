@@ -125,22 +125,20 @@ int findMaxConsecutiveOnesOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to solve Max Consecutive Ones III where you can flip at most K zeroes (LeetCode 1004)?**  
+  **A**: Use a Sliding Window: maintain `left` and `right` pointers and `zeroCount`. Expand `right`. If `nums[right] == 0`, increment `zeroCount`. While `zeroCount > k`, if `nums[left] == 0` decrement `zeroCount` and increment `left`. Max window length is $R - L + 1$.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if the binary array is circular (end connects to beginning)?**  
+  **A**: If the array is all 1s, return $n$. Otherwise, the maximum consecutive 1s is $\max(\text{internal max streak}, \text{prefix 1s} + \text{suffix 1s})$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to count maximum consecutive occurrences of ANY arbitrary value, not just 1?**  
+  **A**: Track `currentVal = nums[0]`, `currentStreak = 1`. If `nums[i] == currentVal`, `currentStreak++`; else `currentVal = nums[i], currentStreak = 1`. Update `maxStreak = max(maxStreak, currentStreak)`.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to process a 100GB bitstream efficiently using 64-bit CPU words?**  
+  **A**: Load 64 bits at once into `uint64_t`. Trailing and leading zero counts via `__builtin_clzll` and `__builtin_ctzll` allow skipping large chunks of contiguous 1s/0s in single CPU instructions.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: Can this be formulated using Dynamic Programming?**  
+  **A**: Yes, `dp[i]` represents consecutive 1s ending at index $i$: `dp[i] = (nums[i] == 1) ? dp[i-1] + 1 : 0`, optimized to $\mathcal{O}(1)$ space with a single accumulator.
 
 ## 9. Tags & Related Problems
 

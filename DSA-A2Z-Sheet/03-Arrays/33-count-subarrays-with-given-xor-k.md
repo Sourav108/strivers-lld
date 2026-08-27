@@ -122,22 +122,20 @@ int subarraysWithXorKOptimal(const vector<int>& nums, int k) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What is the mathematical proof of the prefix XOR frequency map?**  
+  **A**: Let $XR_i$ be prefix XOR up to $i$. Subarray $nums[j..i]$ has XOR $k \iff XR_i \oplus XR_{j-1} = k$. XORing both sides with $k \oplus XR_{j-1}$ gives $XR_{j-1} = XR_i \oplus k$. Every time $XR_i \oplus k$ has occurred in past prefix XORs, it forms a valid subarray.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why is `freq[0] = 1` initialized in the frequency map?**  
+  **A**: If prefix XOR $XR_i == k$, then $XR_i \oplus k = 0$. The entry `freq[0] = 1` accounts for the full prefix subarray from index 0 to $i$ having XOR equal to $k$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does this compare with Count Subarrays with Sum K?**  
+  **A**: The algorithms are mathematically isomorphic: Subarray Sum uses $(S - k)$, Subarray XOR uses $(XR \oplus k)$ because XOR is its own self-inverse ($x \oplus x = 0$).
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can we implement this using a Bitwise Trie instead of a hash map?**  
+  **A**: Yes, insert 32-bit prefix XORs into a Trie where each node stores subtree insertion counts. Querying $XR \oplus k$ takes $\mathcal{O}(32) = \mathcal{O}(1)$ deterministic time without hash collisions.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to solve Maximum XOR Subarray (finding subarray with maximum possible XOR)?**  
+  **A**: Maintain prefix XORs in a Bitwise Trie. For each prefix XOR, query the Trie for the path that maximizes opposite bits at each step in $\mathcal{O}(32 \cdot n) = \mathcal{O}(n)$ time.
 
 ## 9. Tags & Related Problems
 

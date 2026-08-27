@@ -118,22 +118,20 @@ int removeDuplicatesOptimal(vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to allow at most K duplicates (e.g. LeetCode 80 where K = 2)?**  
+  **A**: Generalize the write condition: write `nums[i++] = nums[j]` if `i < K || nums[j] != nums[i - K]`. This elegantly handles any $K \ge 1$ in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if the array is unsorted and must be modified in-place with O(1) extra space?**  
+  **A**: Without extra space, we must sort the array first in $\mathcal{O}(n \log n)$, then apply the two-pointer in-place removal in $\mathcal{O}(n)$. If order must be preserved, an $\mathcal{O}(n)$ hash set is required.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How does `std::unique` in C++ STL work under the hood?**  
+  **A**: `std::unique(first, last)` uses the identical two-pointer algorithm: it iterates through the range and overwrites duplicate consecutive elements, returning an iterator to the new logical end.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can this duplicate removal be parallelized across multiple threads?**  
+  **A**: Yes, using a 2-pass parallel prefix scan: Thread $T_k$ marks unique boundaries `1` and duplicates `0`, computes parallel prefix sums to determine destination indices, and scatters elements into the target array.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How would you remove duplicates from a Singly Linked List?**  
+  **A**: Traverse with pointer `curr`. If `curr->val == curr->next->val`, update `curr->next = curr->next->next` and `delete` the skipped node in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
 ## 9. Tags & Related Problems
 

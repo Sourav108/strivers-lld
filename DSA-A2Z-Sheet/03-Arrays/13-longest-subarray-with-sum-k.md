@@ -130,22 +130,20 @@ int longestSubarrayOptimal(const vector<int>& nums, int k) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: If the array contains ONLY POSITIVE integers, how can we achieve O(1) space?**  
+  **A**: Use the Two-Pointer / Sliding Window technique: maintain `left` and `right` with `currentSum`. Expand `right` by adding `nums[right]`. While `currentSum > k`, subtract `nums[left++]`. When `currentSum == k`, update `maxLen = max(maxLen, right - left + 1)`. Runs in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why does the Two-Pointer sliding window approach FAIL when negative numbers are present?**  
+  **A**: Because adding a negative number decreases `currentSum`, and subtracting a negative number increases `currentSum`. The monotonic relationship between window size and window sum is broken, so shrinking/expanding cannot guarantee finding the target sum.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: Why do we only store the FIRST occurrence of each prefix sum in the hash map?**  
+  **A**: Because we want to maximize subarray length $j - i$. The earliest index $i$ where prefix sum was seen gives the largest difference $j - i$.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to adapt this to find the SHORTEST subarray with sum K?**  
+  **A**: Store the *latest* index of each prefix sum: overwrite `prefixMap[sum] = i` on every step, and update `minLen = min(minLen, i - prefixMap[rem])`.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to count the total NUMBER of subarrays with sum K?**  
+  **A**: Maintain a frequency map `prefixFreq` mapping `prefixSum -> count`. Add `prefixFreq[sum - k]` to `totalCount` on each step.
 
 ## 9. Tags & Related Problems
 

@@ -120,22 +120,20 @@ vector<vector<int>> generatePascalOptimal(int numRows) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: How to compute the single element at row R and column C in O(C) time and O(1) space?**  
+  **A**: Use the combinatorial formula $\binom{R-1}{C-1} = \frac{(R-1) \times (R-2) \times \dots \times (R-C+1)}{1 \times 2 \times \dots \times (C-1)}$. Compute iteratively multiplying the numerator and dividing the denominator in $\mathcal{O}(C)$ operations.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How to generate ONLY the N-th row of Pascal's triangle in O(N) time and O(1) extra space?**  
+  **A**: Start with `val = 1`. For $i = 1$ to $N-1$, compute next element `val = val * (N - i) / i` and append to the row vector in $\mathcal{O}(N)$ time.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What are the key mathematical properties of Pascal's Triangle?**  
+  **A**: 1) Sum of row $N$ is $2^{N-1}$. 2) Diagonals represent triangular, tetrahedral, and simplex numbers. 3) Parity of elements (odd/even) forms the fractal **Sierpinski Triangle**.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to prevent 64-bit integer overflow when computing nCr for N = 60?**  
+  **A**: Compute using prime factorization cancellations, dynamic programming with addition, or 128-bit integers (`__int128_t` in GCC/Clang).
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How does Pascal's Triangle relate to Binomial Theorem?**  
+  **A**: The $N$-th row contains the exact polynomial coefficients for the algebraic expansion of $(x + y)^{N-1} = \sum_{k=0}^{N-1} \binom{N-1}{k} x^{N-1-k} y^k$.
 
 ## 9. Tags & Related Problems
 

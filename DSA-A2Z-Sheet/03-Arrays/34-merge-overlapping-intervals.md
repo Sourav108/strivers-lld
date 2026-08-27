@@ -120,22 +120,20 @@ vector<vector<int>> mergeIntervalsOptimal(vector<vector<int>>& intervals) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why is sorting by start time both necessary and sufficient?**  
+  **A**: Sorting by start time guarantees that if interval $B$ overlaps with interval $A$ ($A.\text{start} \le B.\text{start}$), it must appear after $A$ in the sorted array. It localizes all potential overlaps to adjacent elements in $\mathcal{O}(n \log n)$ time.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if intervals are closed vs open/half-open e.g. [a, b) vs [a, b]?**  
+  **A**: For closed intervals $[a, b]$, $[1, 2]$ and $[2, 3]$ overlap (`curr.start <= prev.end`). For half-open intervals $[a, b)$, $[1, 2)$ and $[2, 3)$ do NOT overlap (`curr.start < prev.end`).
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to solve Insert Interval (LeetCode 57) in O(n) time without sorting?**  
+  **A**: 1) Add all intervals ending before new interval starts. 2) Merge all overlapping intervals into new interval. 3) Add all intervals starting after new interval ends. Runs in single $\mathcal{O}(n)$ pass.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: How to find the total length of timeline covered by overlapping intervals?**  
+  **A**: Merge overlapping intervals first in $\mathcal{O}(n \log n)$, then sum `(iv.end - iv.start)` for all merged intervals in $\mathcal{O}(n)$ time.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to solve Meeting Rooms II (Minimum conference rooms required)?**  
+  **A**: Separate start times and end times into two sorted arrays. Use two pointers: increment room count on start time, decrement on end time. Maximum concurrent rooms is peak room count in $\mathcal{O}(n \log n)$.
 
 ## 9. Tags & Related Problems
 

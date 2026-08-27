@@ -138,22 +138,20 @@ int singleNumberOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What if every element appears THREE times except one which appears once (LeetCode 137)?**  
+  **A**: Count bits at each position $0..31$ modulo 3: `bitSum % 3`. Alternatively, use two bitmasks `ones` and `twos` with boolean algebra: `ones = (ones ^ x) & ~twos; twos = (twos ^ x) & ~ones;` in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: What if every element appears TWICE except TWO elements which appear once (LeetCode 260)?**  
+  **A**: XOR all elements to get $X = A \oplus B$. Find rightmost set bit `diff = X & (-X)`. Partition array into two sets: numbers with `diff` bit set vs unset. XOR each set independently to isolate $A$ and $B$.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: Can we find the single number in O(log n) if the array is sorted?**  
+  **A**: Yes, Binary Search on index parity: before the single element, pairs start at even indices `nums[2k] == nums[2k+1]`. After the single element, pairs start at odd indices `nums[2k+1] == nums[2k+2]`.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What mathematical algebraic structure does XOR form?**  
+  **A**: XOR forms an **Abelian Group** over bit strings: closure, associativity, commutativity, identity ($0$), and every element is its own self-inverse ($x \oplus x = 0$).
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if elements are floating-point numbers or strings instead of integers?**  
+  **A**: XOR operates strictly on discrete bit vectors. For floats or strings, an $\mathcal{O}(n)$ Hash Map or sorting $\mathcal{O}(n \log n)$ is required.
 
 ## 9. Tags & Related Problems
 

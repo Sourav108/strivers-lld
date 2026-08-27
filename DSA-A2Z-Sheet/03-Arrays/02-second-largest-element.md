@@ -141,22 +141,20 @@ int secLargestOptimal(const vector<int>& nums) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: What is the theoretical minimum number of comparisons to find the second largest element?**  
+  **A**: Using the Tournament Tree (Knuth's method), we need $n + \lceil \log_2 n \rceil - 2$ comparisons. The maximum is found in $n - 1$ comparisons; the second largest must be one of the $\lceil \log_2 n \rceil$ elements that lost directly to the maximum.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: How does the single-pass algorithm behave when all elements are identical, e.g., `[5, 5, 5, 5]`?**  
+  **A**: Because we strictly enforce `x < largest` in `else if (x > secondLargest && x < largest)`, duplicate maximums are ignored. `secondLargest` remains `-1`, correctly signaling that no distinct second largest exists.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to find the K-th largest element in an unsorted stream?**  
+  **A**: Maintain a Min-Heap of size $K$. For each element, if it is larger than the heap top, pop and push the new element. The heap top always holds the $K$-th largest element in $\mathcal{O}(n \log K)$ time and $\mathcal{O}(K)$ space.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can we eliminate branch mispredictions in CPU pipeline for this scan?**  
+  **A**: Yes, by replacing conditional branches with branchless conditional move instructions (`CMOV` in x86) or bitwise arithmetic masks to avoid pipeline stalls on random inputs.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if the array contains negative numbers and `INT_MIN` is a valid element?**  
+  **A**: Avoid using sentinel values like `-1` or `INT_MIN`. Use `std::optional<int>` or a boolean flag `hasSecond` to distinguish whether a second largest element has been recorded.
 
 ## 9. Tags & Related Problems
 

@@ -148,22 +148,20 @@ void setZeroesOptimal(vector<vector<int>>& mat) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why is a separate `col0` variable needed instead of using `mat[0][0]` for both first row and first column?**  
+  **A**: `mat[0][0]` is shared by both row 0 and column 0. If `mat[0][0] = 0`, we cannot tell whether row 0, column 0, or both need to be zeroed. Using `col0` for column 0 and `mat[0][0]` for row 0 disambiguates them.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why MUST the matrix update loop run from bottom-up (`m-1` down to 0)?**  
+  **A**: If we updated row 0 and col 0 first, their original marker zeroes would overwrite other non-zero markers, corrupting the remaining inner matrix updates.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: What if the matrix is sparse ($10^6 \times 10^6$ with only 10 zeroes)?**  
+  **A**: Store the 10 coordinates in a hash set of rows and columns using $\mathcal{O}(k)$ space where $k=10$. Iterate only the affected rows and columns instead of the entire $10^{12}$ cell matrix.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: Can this be implemented on a GPU with CUDA?**  
+  **A**: Yes, launch $M$ threads for rows and $N$ threads for cols: Thread $i$ checks row $i$ for zero; then launch $M \times N$ threads to set `mat[i][j] = 0` if `rowZero[i] || colZero[j]` in $\mathcal{O}(1)$ parallel GPU time.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: What if the matrix is stored on disk in row-major order?**  
+  **A**: Process row-by-row sequentially to maximize disk page cache hit rates; write zeroed rows in single block I/O operations.
 
 ## 9. Tags & Related Problems
 

@@ -122,22 +122,20 @@ int subarraySumOptimal(const vector<int>& nums, int k) {
 
 ## 8. Follow-Up Questions (Interview Style)
 
-- **Q1: What if the array is already sorted?**  
-  **A**: Exploiting sortedness allows two pointers or binary search to reduce time to $\mathcal{O}(\log n)$ or space to $\mathcal{O}(1)$.
+- **Q1: Why must we initialize `prefixFreq[0] = 1` in the hash map?**  
+  **A**: Because if a prefix sum equals $k$ exactly at index $i$ (`sum == k`), then `sum - k = 0`. The count `prefixFreq[0] = 1` credits the valid subarray extending from index 0 to index $i$.
 
-- **Q2: What if elements arrive in a streaming fashion?**  
-  **A**: Single-pass state accumulators adapt naturally to online streaming computation in $\mathcal{O}(1)$ amortized time per event.
+- **Q2: Why does the Sliding Window approach fail when negative numbers are present?**  
+  **A**: Sliding window requires monotonicity: expanding the window must strictly increase the sum, and shrinking must decrease it. Negative numbers destroy monotonicity, so a hash map is required.
 
-- **Q3: What if input does not fit into RAM?**  
-  **A**: Use external merge sort or MapReduce chunking with streaming combiner passes.
+- **Q3: How to find the number of subarrays whose sum is DIVISIBLE by K (LeetCode 974)?**  
+  **A**: Use modulo arithmetic: store frequencies of normalized remainders `rem = (sum % k + k) % k`. If `prefixMap.count(rem)`, add count to total in $\mathcal{O}(n)$ time.
 
-- **Q4: Can we parallelize this algorithm?**  
-  **A**: Divide and conquer enables multi-threaded chunk evaluation with an $\mathcal{O}(1)$ merge step.
+- **Q4: What if the array is purely positive and we want all subarrays summing to K?**  
+  **A**: Two Pointers sliding window finds count in $\mathcal{O}(n)$ time and $\mathcal{O}(1)$ space by maintaining running sum and adjusting window edges.
 
-- **Q5: How does this generalize to multidimensional arrays or higher $K$?**  
-  **A**: Techniques reduce higher dimensions by fixing degrees of freedom iteratively.
-
----
+- **Q5: How to parallelize counting subarrays summing to K?**  
+  **A**: Compute parallel prefix sums across chunks, construct local prefix frequency maps, and cross-correlate prefix sums between chunk boundaries.
 
 ## 9. Tags & Related Problems
 
