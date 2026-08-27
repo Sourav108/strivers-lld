@@ -11,7 +11,7 @@
 |---|---|---|:---:|:---:|
 | 01 | [**01-Learn-the-Basics**](./01-Learn-the-Basics/README.md) | C++ Basics, 22 Patterns, STL, Basic Maths, Recursion, Hashing | **54** | 🟡 In Progress |
 | 02 | [**02-Sorting-Techniques**](./02-Sorting-Techniques/README.md) | Selection, Bubble, Insertion, Merge Sort, Quick Sort | **7** | ⚪ Pending |
-| 03 | [**03-Arrays**](./03-Arrays/README.md) | Two Pointers, Kadane's, Moore's Voting, Dutch Flag, Hard Subarrays | **40** | ⚪ Pending |
+| 03 | [**03-Arrays**](./03-Arrays/README.md) | Two Pointers, Kadane's, Moore's Voting, Dutch Flag, Hard Subarrays | **40** | 🟢 Completed (40/40) |
 | 04 | [**04-Binary-Search**](./04-Binary-Search/README.md) | BS 1D, Rotated Arrays, BS on Answers, 2D Matrix Binary Search | **32** | ⚪ Pending |
 | 05 | [**05-Strings-Basic**](./05-Strings-Basic/README.md) | Anagrams, Isomorphic, Roman Numerals, Nesting Depth | **15** | ⚪ Pending |
 | 06 | [**06-LinkedList**](./06-LinkedList/README.md) | Singly & Doubly LL, Floyd's Cycle, Reversals, K-Group, Flattening | **31** | ⚪ Pending |
