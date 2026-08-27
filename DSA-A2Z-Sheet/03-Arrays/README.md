@@ -28,7 +28,7 @@ Comprehensive array mastery: Two Pointers, Kadane's Algorithm, Moore's Voting, D
 
 ### Step 3.2: Medium Array Problems (14 Problems)
 
-- [ ] **Problem 14**: [Two Sum: Check if pair with given sum exists](https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/) — 🟢 `Easy`
+- [x] **Problem 14**: [Two Sum: Check if pair with given sum exists](./01-two-sum.md) — 🟢 `Easy` (Solved)
 - [ ] **Problem 15**: [Sort an Array of 0s, 1s and 2s (Dutch National Flag)](https://takeuforward.org/data-structure/sort-an-array-of-0s-1s-and-2s/) — 🟡 `Medium`
 - [ ] **Problem 16**: [Majority Element (> n/2 times) (Moore's Voting)](https://takeuforward.org/data-structure/find-the-majority-element-that-occurs-more-than-n-2-times/) — 🟡 `Medium`
 - [ ] **Problem 17**: [Maximum Subarray Sum in an Array (Kadane's Algorithm)](https://takeuforward.org/data-structure/kadanes-algorithm-maximum-subarray-sum-in-an-array/) — 🟡 `Medium`

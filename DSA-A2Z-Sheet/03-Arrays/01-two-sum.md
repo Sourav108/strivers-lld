@@ -1,10 +1,8 @@
-# Two Sum (Step 3 — Arrays)
+# Two Sum (LeetCode #1)
 
-This is a worked example of what `AI_PROMPT_TEMPLATE.md` should produce. Use it as your quality bar.
-
-- **Source**: [LeetCode 1](https://leetcode.com/problems/two-sum/) / [GFG](https://www.geeksforgeeks.org/check-if-pair-with-given-sum-exists-in-array/) / [TUF Arrays section](https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/)
-- **Difficulty**: Easy
-- **Statement**: Given an array `nums` and an integer `target`, return the indices of the two numbers that add up to `target`. Exactly one valid answer exists; you may not use the same element twice.
+> **Step / Topic**: Step 03 — Arrays (Medium)  
+> **Source Link**: [LeetCode 1](https://leetcode.com/problems/two-sum/) | [TakeUForward Article](https://takeuforward.org/data-structure/two-sum-check-if-a-pair-with-given-sum-exists-in-array/)  
+> **Difficulty**: Easy
 
 ---
 
