@@ -84,10 +84,10 @@ In distributed systems, physical clocks across servers drift by milliseconds due
 
 ```mermaid
 flowchart TD
-    TimeOrder["Tracking Event Ordering"] --> NTP["Physical Clocks (NTP)<br/>⚠️ Clock drift causes data loss on 'Last-Write-Wins'"]
-    TimeOrder --> Lamport["Lamport Timestamps<br/>Monotonic counter provides Total Ordering<br/>⚠️ Cannot determine true concurrent events"]
-    TimeOrder --> Vector["Vector Clocks [V_A, V_B, V_C]<br/>Tracks causal relationships & detects conflicts"]
-    TimeOrder --> TrueTime["Google TrueTime API<br/>[earliest, latest] bounded time via GPS + Atomic Clocks"]
+    TimeOrder["Tracking Event Ordering"] --> NTP["Physical Clocks (NTP)<br/>Clock drift causes data loss on Last-Write-Wins"]
+    TimeOrder --> Lamport["Lamport Timestamps<br/>Monotonic counter provides Total Ordering"]
+    TimeOrder --> Vector["Vector Clocks (V_A, V_B, V_C)<br/>Tracks causal relationships & detects conflicts"]
+    TimeOrder --> TrueTime["Google TrueTime API<br/>Bounded uncertainty interval via GPS + Atomic Clocks"]
 ```
 
 | Mechanism | Description | Conflict Handling | Best For |

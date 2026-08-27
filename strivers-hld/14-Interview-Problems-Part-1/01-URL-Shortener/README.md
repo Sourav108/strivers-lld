@@ -16,7 +16,7 @@ flowchart TD
     end
 
     Gateway -->|POST /api/v1/shorten| WriteSvc
-    Gateway -->|GET /{short_key}| ReadSvc
+    Gateway -->|GET /:short_key| ReadSvc
     WriteSvc <--> KGS
 
     subgraph StorageTier["Data & Cache Tier"]

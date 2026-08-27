@@ -39,9 +39,9 @@ Why can Apache Kafka process millions of events per second on standard commodity
 flowchart LR
     subgraph Topic["Kafka Topic: 'orders'"]
         direction TB
-        P0["Partition 0: [0][1][2][3][4]..."] --> C0["Consumer A (Offset: 4)"]
-        P1["Partition 1: [0][1][2][3]..."] --> C1["Consumer B (Offset: 3)"]
-        P2["Partition 2: [0][1][2][3][4][5]..."] --> C2["Consumer C (Offset: 5)"]
+        P0["Partition 0: Msg 0, 1, 2, 3, 4..."] --> C0["Consumer A (Offset: 4)"]
+        P1["Partition 1: Msg 0, 1, 2, 3..."] --> C1["Consumer B (Offset: 3)"]
+        P2["Partition 2: Msg 0, 1, 2, 3, 4, 5..."] --> C2["Consumer C (Offset: 5)"]
     end
 ```
 

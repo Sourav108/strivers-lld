@@ -44,17 +44,17 @@ sequenceDiagram
     participant GW2 as Gateway Server 2
     actor Bob as Bob (Recipient)
 
-    Alice->>GW1: Send Message { to: "Bob", payload: "Hello", msg_id: "m_10" }
-    GW1-->>Alice: Ack (Received by Server `✓`)
+    Alice->>GW1: Send Message (to Bob: "Hello", msg_id: "m_10")
+    GW1-->>Alice: Ack (Received by Server: 1 Check)
     GW1->>Router: Route Message to Bob
     Router->>Redis: GET session:Bob
     Redis-->>Router: Returns "GW2_IP:10.0.5.21"
     Router->>GW2: Forward Message via gRPC
     GW2->>Bob: Push Message over Bob's WebSocket
-    Bob-->>GW2: Ack (Delivered to Device `✓✓`)
+    Bob-->>GW2: Ack (Delivered to Device: 2 Checks)
     GW2->>Router: Delivery Receipt Notification
     Router->>GW1: Forward Delivery Ack
-    GW1->>Alice: Push Delivery Receipt `✓✓` to Alice
+    GW1->>Alice: Push Delivery Receipt (2 Checks) to Alice
 ```
 
 ---

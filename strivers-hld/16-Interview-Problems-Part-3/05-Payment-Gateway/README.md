@@ -66,8 +66,8 @@ In financial accounting, money is never created or destroyed out of thin air; ev
 
 ```mermaid
 flowchart LR
-    CustomerCard["Customer Available Balance (-$100) [Debit]"] --> MerchantAcct["Merchant Settlement Account (+$97) [Credit]"]
-    CustomerCard --> GatewayFee["Payment Gateway Fee Account (+$3) [Credit]"]
+    CustomerCard["Customer Available Balance (-$100) (Debit)"] --> MerchantAcct["Merchant Settlement Account (+$97) (Credit)"]
+    CustomerCard --> GatewayFee["Payment Gateway Fee Account (+$3) (Credit)"]
 ```
 
 ```sql

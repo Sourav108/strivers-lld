@@ -15,7 +15,7 @@ flowchart TD
     end
 
     Gateway -->|POST /api/v1/pastes| PasteWriteSvc
-    Gateway -->|GET /api/v1/pastes/{id}| PasteReadSvc
+    Gateway -->|GET /api/v1/pastes/:id| PasteReadSvc
     PasteWriteSvc <--> KGS
 
     subgraph StorageLayer["Data & Object Storage Tier"]
