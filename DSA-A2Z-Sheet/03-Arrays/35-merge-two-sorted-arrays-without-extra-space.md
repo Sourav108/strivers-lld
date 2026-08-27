@@ -56,7 +56,35 @@ void mergeSortedBrute(vector<int>& nums1, int m, vector<int>& nums2, int n) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Swap-and-Sort: Place pointer `i` at the end of array $A$ ($n-1$) and pointer `j` at the beginning of array $B$ (0). If $A[i] > B[j]$, swap them and advance `i--`, `j++`. When $A[i] \le B[j]$, stop and sort $A$ and $B$ individually.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void mergeSortedBetter(vector<int>& a, int n, vector<int>& b, int m) {
+    int i = n - 1, j = 0;
+    while (i >= 0 && j < m) {
+        if (a[i] > b[j]) {
+            swap(a[i], b[j]);
+            i--;
+            j++;
+        } else {
+            break;
+        }
+    }
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(\min(n, m)) + \mathcal{O}(n \log n + m \log m)$ — linear swap pass followed by sorting both arrays.
+- **Space Complexity**: $\mathcal{O}(1)$ — constant auxiliary memory.
+- **Why it's still not optimal**: Relies on standard sorting; the Gap Method achieves $\mathcal{O}((n+m) \log(n+m))$ without full sorting.
 
 ---
 

@@ -62,7 +62,32 @@ vector<int> findMissingRepeatingBrute(const vector<int>& nums) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Frequency / Count Array: Create a count vector of size $n+1$ initialized to 0. Increment `count[x]` for each $x \in \text{nums}$. The index with `count[i] == 2` is the repeating number $A$; the index with `count[i] == 0` is the missing number $B$.
+
+### C++17 Code
+```cpp
+#include <vector>
+using namespace std;
+
+vector<int> findMissingRepeatingBetter(const vector<int>& nums) {
+    int n = nums.size();
+    vector<int> freq(n + 1, 0);
+    for (int x : nums) freq[x]++;
+    
+    int repeating = -1, missing = -1;
+    for (int i = 1; i <= n; i++) {
+        if (freq[i] == 2) repeating = i;
+        else if (freq[i] == 0) missing = i;
+    }
+    return {repeating, missing};
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(2n) = \mathcal{O}(n)$ — two linear scans.
+- **Space Complexity**: $\mathcal{O}(n)$ — frequency array of size $n+1$.
+- **Why it's still not optimal**: Requires $\mathcal{O}(n)$ auxiliary memory; the mathematical equation system or bitwise XOR partitions achieves $\mathcal{O}(1)$ space.
 
 ---
 

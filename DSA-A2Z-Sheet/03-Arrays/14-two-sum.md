@@ -59,7 +59,40 @@ vector<int> twoSumBrute(vector<int>& nums, int target) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Sort + Two Pointers: Store element-index pairs `vector<pair<int, int>>`, sort ascending by value in $\mathcal{O}(n \log n)$, and use two pointers (`left` and `right`) to find the pair summing to `target`.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+vector<int> twoSumBetter(vector<int>& nums, int target) {
+    int n = nums.size();
+    vector<pair<int, int>> indexedNums(n);
+    for (int i = 0; i < n; i++) indexedNums[i] = {nums[i], i};
+    
+    sort(indexedNums.begin(), indexedNums.end());
+    int left = 0, right = n - 1;
+    while (left < right) {
+        int sum = indexedNums[left].first + indexedNums[right].first;
+        if (sum == target) {
+            return {indexedNums[left].second, indexedNums[right].second};
+        } else if (sum < target) {
+            left++;
+        } else {
+            right--;
+        }
+    }
+    return {};
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n \log n)$ — dominated by sorting the pair array.
+- **Space Complexity**: $\mathcal{O}(n)$ — pair array to preserve original indices.
+- **Why it's still not optimal**: Sorting overhead $\mathcal{O}(n \log n)$ is slower than the optimal single-pass hash map $\mathcal{O}(n)$ time.
 
 ---
 

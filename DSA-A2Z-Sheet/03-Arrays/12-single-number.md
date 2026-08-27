@@ -61,29 +61,30 @@ int singleNumberBrute(const vector<int>& nums) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Uses hash map consuming extra memory.
+Hash Map Frequency Count: Iterate through `nums` and populate a hash map `unordered_map<int, int>` with the occurrence count of each number. Then iterate through the map to find the key with `count == 1`.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
-#include <climits>
 #include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
 int singleNumberBetter(const vector<int>& nums) {
     unordered_map<int, int> freq;
-    for (int x : nums) freq[x]++;
-    for (auto& [val, count] : freq) if (count == 1) return val;
+    for (int x : nums) {
+        freq[x]++;
+    }
+    for (const auto& [val, count] : freq) {
+        if (count == 1) return val;
+    }
     return -1;
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(n)
-- **Space Complexity**: O(n)
-- **Why it's still not optimal**: Uses hash map consuming extra memory.
+- **Time Complexity**: $\mathcal{O}(n)$ average time for hash map insertions and queries.
+- **Space Complexity**: $\mathcal{O}(n)$ — stores $n/2 + 1$ distinct keys in the hash table.
+- **Why it's still not optimal**: Requires $\mathcal{O}(n)$ extra space and dynamic memory allocations, whereas bitwise XOR achieves $\mathcal{O}(1)$ space.
 
 ---
 

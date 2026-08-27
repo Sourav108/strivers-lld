@@ -54,31 +54,31 @@ void sortColorsBrute(vector<int>& nums) { sort(nums.begin(), nums.end()); }
 ## 4. Approach 2 — Better
 
 ### Idea
-Requires two passes.
+Counting Sort (2 Passes): First pass counts the total occurrences of `0`s, `1`s, and `2`s. Second pass overwrites the original array with the counted number of `0`s, then `1`s, then `2`s.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
-#include <climits>
-#include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
 void sortColorsBetter(vector<int>& nums) {
-    int c0 = 0, c1 = 0, c2 = 0;
-    for (int x : nums) { if (x == 0) c0++; else if (x == 1) c1++; else c2++; }
+    int count0 = 0, count1 = 0, count2 = 0;
+    for (int x : nums) {
+        if (x == 0) count0++;
+        else if (x == 1) count1++;
+        else count2++;
+    }
     int idx = 0;
-    while (c0--) nums[idx++] = 0;
-    while (c1--) nums[idx++] = 1;
-    while (c2--) nums[idx++] = 2;
+    while (count0--) nums[idx++] = 0;
+    while (count1--) nums[idx++] = 1;
+    while (count2--) nums[idx++] = 2;
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(2n) = O(n)
-- **Space Complexity**: O(1)
-- **Why it's still not optimal**: Requires two passes.
+- **Time Complexity**: $\mathcal{O}(2n) = \mathcal{O}(n)$ — one pass for counting, one pass for rewriting.
+- **Space Complexity**: $\mathcal{O}(1)$ — three integer counters.
+- **Why it's still not optimal**: Requires 2 passes over the array and multiple memory writes; Dutch National Flag partitions the array in a single pass with minimum swaps.
 
 ---
 

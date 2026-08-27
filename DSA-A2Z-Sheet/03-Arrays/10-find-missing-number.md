@@ -61,29 +61,29 @@ int missingBrute(const vector<int>& nums, int n) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Uses extra O(n) hash vector.
+Hash/Frequency Array: Create a boolean/frequency array of size $n+1$ initialized to 0. Mark `hash[x] = 1` for each number seen in `nums`. The index $i \in [1, n]$ where `hash[i] == 0` is the missing number.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
-#include <climits>
-#include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
-int missingBetter(const vector<int>& nums, int n) {
-    vector<int> hash(n + 1, 0);
-    for (int x : nums) hash[x] = 1;
-    for (int i = 1; i <= n; i++) if (hash[i] == 0) return i;
+int findMissingBetter(const vector<int>& nums, int n) {
+    vector<int> freq(n + 1, 0);
+    for (int x : nums) {
+        freq[x] = 1;
+    }
+    for (int i = 1; i <= n; i++) {
+        if (freq[i] == 0) return i;
+    }
     return -1;
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(n)
-- **Space Complexity**: O(n)
-- **Why it's still not optimal**: Uses extra O(n) hash vector.
+- **Time Complexity**: $\mathcal{O}(2n) = \mathcal{O}(n)$ — two linear scans.
+- **Space Complexity**: $\mathcal{O}(n)$ — frequency array of size $n+1$.
+- **Why it's still not optimal**: Consumes $\mathcal{O}(n)$ auxiliary memory when bitwise XOR or Gauss sum can isolate the missing number in $\mathcal{O}(1)$ space.
 
 ---
 

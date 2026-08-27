@@ -63,34 +63,35 @@ int longestConsecutiveBrute(const vector<int>& nums) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Requires sorting.
+Sort + Linear Scan: Sort the array in $\mathcal{O}(n \log n)$. Iterate through the sorted elements, skipping duplicates and incrementing streak counter when `nums[i] == nums[i-1] + 1`.
 
 ### C++17 Code
 ```cpp
 #include <vector>
 #include <algorithm>
-#include <climits>
-#include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
 int longestConsecutiveBetter(vector<int>& nums) {
     if (nums.empty()) return 0;
     sort(nums.begin(), nums.end());
-    int maxLen = 1, cnt = 1;
+    int maxLen = 1, currentStreak = 1;
     for (size_t i = 1; i < nums.size(); i++) {
-        if (nums[i] == nums[i - 1]) continue;
-        if (nums[i] == nums[i - 1] + 1) cnt++;
-        else { maxLen = max(maxLen, cnt); cnt = 1; }
+        if (nums[i] == nums[i - 1]) continue; // skip duplicates
+        if (nums[i] == nums[i - 1] + 1) {
+            currentStreak++;
+        } else {
+            maxLen = max(maxLen, currentStreak);
+            currentStreak = 1;
+        }
     }
-    return max(maxLen, cnt);
+    return max(maxLen, currentStreak);
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(n log n)
-- **Space Complexity**: O(1)
-- **Why it's still not optimal**: Requires sorting.
+- **Time Complexity**: $\mathcal{O}(n \log n)$ — dominated by sorting.
+- **Space Complexity**: $\mathcal{O}(1)$ or $\mathcal{O}(\log n)$ sorting stack space.
+- **Why it's still not optimal**: Sorting takes $\mathcal{O}(n \log n)$, while hash set with sequence head detection achieves linear $\mathcal{O}(n)$ time.
 
 ---
 

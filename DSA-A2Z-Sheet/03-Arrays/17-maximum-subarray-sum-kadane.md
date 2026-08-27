@@ -60,7 +60,32 @@ int maxSubarrayBrute(const vector<int>& nums) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Two Nested Loops (Running Sum): Fix starting index $i$, iterate ending index $j$ from $i$ to $n-1$, accumulating running sum in $\mathcal{O}(1)$ per subarray.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <climits>
+using namespace std;
+
+int maxSubArrayBetter(const vector<int>& nums) {
+    int maxSum = INT_MIN, n = nums.size();
+    for (int i = 0; i < n; i++) {
+        int currentSum = 0;
+        for (int j = i; j < n; j++) {
+            currentSum += nums[j];
+            if (currentSum > maxSum) maxSum = currentSum;
+        }
+    }
+    return maxSum;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n^2)$ — considers all $n(n+1)/2$ contiguous subarrays.
+- **Space Complexity**: $\mathcal{O}(1)$ — constant space.
+- **Why it's still not optimal**: Still $\mathcal{O}(n^2)$ which triggers TLE at $n = 10^5$. Kadane's algorithm reduces this to linear $\mathcal{O}(n)$ time.
 
 ---
 

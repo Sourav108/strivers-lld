@@ -58,7 +58,32 @@ vector<int> majority2Brute(const vector<int>& nums) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Hash Map Frequency Count: Use `unordered_map<int, int>` to count all frequencies, and append any element with `count > floor(n/3)` to the result list.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+vector<int> majorityElement2Better(const vector<int>& nums) {
+    unordered_map<int, int> freq;
+    int threshold = nums.size() / 3;
+    for (int x : nums) freq[x]++;
+    
+    vector<int> res;
+    for (const auto& [val, count] : freq) {
+        if (count > threshold) res.push_back(val);
+    }
+    return res;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n)$ average time.
+- **Space Complexity**: $\mathcal{O}(n)$ — auxiliary hash map storage.
+- **Why it's still not optimal**: Requires $\mathcal{O}(n)$ extra space when extended Boyer-Moore (2 candidates, 2 counters) achieves $\mathcal{O}(1)$ space.
 
 ---
 

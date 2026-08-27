@@ -57,7 +57,31 @@ vector<int> unionBrute(const vector<int>& a, const vector<int>& b) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Hash Set / Map: Insert all elements from both arrays into an `unordered_set` to deduplicate, then copy into a vector and sort.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
+using namespace std;
+
+vector<int> unionBetter(const vector<int>& a, const vector<int>& b) {
+    unordered_set<int> uniqueElements;
+    for (int x : a) uniqueElements.insert(x);
+    for (int x : b) uniqueElements.insert(x);
+    
+    vector<int> res(uniqueElements.begin(), uniqueElements.end());
+    sort(res.begin(), res.end());
+    return res;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}((n+m) + U \log U)$ where $U \le n+m$ is the count of unique elements.
+- **Space Complexity**: $\mathcal{O}(n+m)$ — hash set storage.
+- **Why it's still not optimal**: Ignores the fact that both input arrays are ALREADY sorted, incurring unnecessary hashing and re-sorting overhead.
 
 ---
 

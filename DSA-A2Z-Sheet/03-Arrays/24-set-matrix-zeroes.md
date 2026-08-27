@@ -59,33 +59,38 @@ void setZeroesBrute(vector<vector<int>>& mat) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Uses extra row and column indicator arrays.
+Dummy Row & Column Marker Arrays: Maintain two auxiliary 1D boolean vectors `rowMarkers[m]` and `colMarkers[n]`. First pass records zero rows and columns. Second pass sets `mat[i][j] = 0` if `rowMarkers[i] || colMarkers[j]`.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
-#include <climits>
-#include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
 void setZeroesBetter(vector<vector<int>>& mat) {
     int m = mat.size(), n = mat[0].size();
-    vector<int> row(m, 0), col(n, 0);
-    for (int i = 0; i < m; i++)
-        for (int j = 0; j < n; j++)
-            if (mat[i][j] == 0) row[i] = col[j] = 1;
-    for (int i = 0; i < m; i++)
-        for (int j = 0; j < n; j++)
-            if (row[i] || col[j]) mat[i][j] = 0;
+    vector<int> rowMarker(m, 0), colMarker(n, 0);
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (mat[i][j] == 0) {
+                rowMarker[i] = 1;
+                colMarker[j] = 1;
+            }
+        }
+    }
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            if (rowMarker[i] || colMarker[j]) {
+                mat[i][j] = 0;
+            }
+        }
+    }
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(2*m*n)
-- **Space Complexity**: O(m + n)
-- **Why it's still not optimal**: Uses extra row and column indicator arrays.
+- **Time Complexity**: $\mathcal{O}(2 \cdot m \cdot n) = \mathcal{O}(m \cdot n)$ — two matrix sweeps.
+- **Space Complexity**: $\mathcal{O}(m + n)$ — marker vectors for rows and columns.
+- **Why it's still not optimal**: Uses $\mathcal{O}(m + n)$ extra memory; optimal solution embeds these markers into the first row and column in $\mathcal{O}(1)$ space.
 
 ---
 

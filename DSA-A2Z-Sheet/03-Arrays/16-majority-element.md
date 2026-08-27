@@ -62,31 +62,29 @@ int majorityBrute(const vector<int>& nums) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Uses hash map for frequencies.
+Hash Map Frequency Count: Use `unordered_map<int, int>` to record frequencies of each element. Return the element as soon as its frequency exceeds $\lfloor n/2 \rfloor$.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
-#include <climits>
 #include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
-int majorityBetter(const vector<int>& nums) {
-    unordered_map<int, int> mp;
+int majorityElementBetter(const vector<int>& nums) {
+    unordered_map<int, int> freq;
+    int threshold = nums.size() / 2;
     for (int x : nums) {
-        mp[x]++;
-        if (mp[x] > (int)nums.size() / 2) return x;
+        freq[x]++;
+        if (freq[x] > threshold) return x;
     }
     return -1;
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(n)
-- **Space Complexity**: O(n)
-- **Why it's still not optimal**: Uses hash map for frequencies.
+- **Time Complexity**: $\mathcal{O}(n)$ average time.
+- **Space Complexity**: $\mathcal{O}(n)$ — storing frequency table.
+- **Why it's still not optimal**: Consumes $\mathcal{O}(n)$ auxiliary memory when Boyer-Moore Voting Algorithm achieves $\mathcal{O}(1)$ space.
 
 ---
 

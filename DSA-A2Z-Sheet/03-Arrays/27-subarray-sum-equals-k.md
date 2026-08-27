@@ -60,7 +60,31 @@ int subarraySumBrute(const vector<int>& nums, int k) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Two Nested Loops with Running Sum: Check every subarray $(i, j)$ using a running sum accumulator and increment count whenever `sum == k`.
+
+### C++17 Code
+```cpp
+#include <vector>
+using namespace std;
+
+int subarraySumBetter(const vector<int>& nums, int k) {
+    int count = 0, n = nums.size();
+    for (int i = 0; i < n; i++) {
+        int sum = 0;
+        for (int j = i; j < n; j++) {
+            sum += nums[j];
+            if (sum == k) count++;
+        }
+    }
+    return count;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n^2)$ — evaluates all $n(n+1)/2$ subarrays.
+- **Space Complexity**: $\mathcal{O}(1)$ — constant memory.
+- **Why it's still not optimal**: Quadratic time complexity causes TLE for $n = 2 \times 10^4$. Hash map prefix sum frequency reduces this to $\mathcal{O}(n)$.
 
 ---
 

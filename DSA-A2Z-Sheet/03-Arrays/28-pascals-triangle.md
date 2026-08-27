@@ -57,7 +57,31 @@ vector<vector<int>> pascalBrute(int n) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Dynamic Programming Row-by-Row: Generate each row from the previous row using the recurrence $row[j] = prevRow[j-1] + prevRow[j]$.
+
+### C++17 Code
+```cpp
+#include <vector>
+using namespace std;
+
+vector<vector<int>> generatePascalBetter(int numRows) {
+    vector<vector<int>> triangle;
+    for (int i = 0; i < numRows; i++) {
+        vector<int> row(i + 1, 1);
+        for (int j = 1; j < i; j++) {
+            row[j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+        }
+        triangle.push_back(row);
+    }
+    return triangle;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n^2)$ — total elements computed is $n(n+1)/2$.
+- **Space Complexity**: $\mathcal{O}(n^2)$ — output triangle storage.
+- **Why it's still not optimal**: Requires reading the previous row from memory, whereas the direct combinatorics formula computes any row in isolation.
 
 ---
 

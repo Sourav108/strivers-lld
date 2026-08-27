@@ -61,29 +61,32 @@ int secLargestBrute(vector<int>& nums) {
 ## 4. Approach 2 — Better
 
 ### Idea
-Requires two full scans.
+Two-Pass Scan: First pass finds the global `largest` element in $\mathcal{O}(n)$. Second pass finds the largest element strictly less than `largest` in $\mathcal{O}(n)$.
 
 ### C++17 Code
 ```cpp
 #include <vector>
-#include <algorithm>
 #include <climits>
-#include <unordered_map>
-#include <unordered_set>
 using namespace std;
 
-int secLargestBetter(const vector<int>& nums) {
-    int largest = INT_MIN, sec = -1;
-    for (int x : nums) largest = max(largest, x);
-    for (int x : nums) if (x > sec && x < largest) sec = x;
-    return sec;
+int secondLargestBetter(const vector<int>& nums) {
+    int largest = INT_MIN, secondLargest = -1;
+    for (int x : nums) {
+        if (x > largest) largest = x;
+    }
+    for (int x : nums) {
+        if (x > secondLargest && x < largest) {
+            secondLargest = x;
+        }
+    }
+    return secondLargest;
 }
 ```
 
 ### Complexity Derivation
-- **Time Complexity**: O(2n) = O(n)
-- **Space Complexity**: O(1)
-- **Why it's still not optimal**: Requires two full scans.
+- **Time Complexity**: $\mathcal{O}(2n) = \mathcal{O}(n)$ — two sequential linear passes over the array.
+- **Space Complexity**: $\mathcal{O}(1)$ — constant scalar variables.
+- **Why it's still not optimal**: Requires traversing the array twice when both the largest and second largest can be tracked simultaneously in a single pass.
 
 ---
 

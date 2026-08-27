@@ -60,7 +60,33 @@ int maxProductBrute(const vector<int>& nums) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Kadane's Two-Variable Min/Max DP: Track both `maxProd` and `minProd` ending at the current position. When multiplying by a negative number, swap `maxProd` and `minProd` before updating with current element.
+
+### C++17 Code
+```cpp
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+int maxProductBetter(const vector<int>& nums) {
+    int globalMax = nums[0];
+    int maxProd = nums[0], minProd = nums[0];
+    for (size_t i = 1; i < nums.size(); i++) {
+        if (nums[i] < 0) swap(maxProd, minProd);
+        maxProd = max((long long)nums[i], (long long)maxProd * nums[i]);
+        minProd = min((long long)nums[i], (long long)minProd * nums[i]);
+        globalMax = max(globalMax, maxProd);
+    }
+    return globalMax;
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n)$ — single pass.
+- **Space Complexity**: $\mathcal{O}(1)$ — constant scalar variables.
+- **Why it's still not optimal**: Handles state transitions via 2 variables; prefix/suffix scan provides an equally clean parallelizable alternative.
 
 ---
 

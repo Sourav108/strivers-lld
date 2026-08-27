@@ -58,7 +58,39 @@ void rotateBrute(vector<int>& nums, int k) {
 
 ## 4. Approach 2 — Better
 
-No meaningful intermediate step — the optimal approach below removes the brute force's bottleneck directly.
+### Idea
+Temporary Array: Store the last $k$ elements in an auxiliary vector `temp`. Shift the first $n-k$ elements to the right by $k$ positions, then copy `temp` into the first $k$ slots of the original array.
+
+### C++17 Code
+```cpp
+#include <vector>
+using namespace std;
+
+void rotateBetter(vector<int>& nums, int k) {
+    int n = nums.size();
+    k %= n;
+    if (k == 0) return;
+    
+    // Copy last k elements
+    vector<int> temp(k);
+    for (int i = 0; i < k; i++) {
+        temp[i] = nums[n - k + i];
+    }
+    // Shift remaining elements rightward
+    for (int i = n - k - 1; i >= 0; i--) {
+        nums[i + k] = nums[i];
+    }
+    // Copy temp to front
+    for (int i = 0; i < k; i++) {
+        nums[i] = temp[i];
+    }
+}
+```
+
+### Complexity Derivation
+- **Time Complexity**: $\mathcal{O}(n)$ — copies $k$ elements, shifts $n-k$ elements, and copies $k$ elements back.
+- **Space Complexity**: $\mathcal{O}(k)$ — auxiliary space for temporary buffer.
+- **Why it's still not optimal**: Consumes $\mathcal{O}(k)$ extra memory; the 3-step reversal algorithm achieves the same $\mathcal{O}(n)$ time in strictly $\mathcal{O}(1)$ space.
 
 ---
 
