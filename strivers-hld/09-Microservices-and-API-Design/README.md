@@ -5,16 +5,20 @@
 ```mermaid
 flowchart TD
     subgraph Monolith["Monolithic Architecture"]
-        M_UI["Web / Mobile UI"] --> M_App["Monolith (Auth + Orders + Payments + Inventory)"]
+        M_UI["Web / Mobile UI"] --> M_App["Monolith<br/>(All Modules in 1 Process)"]
         M_App --> M_DB[("Single Shared Database")]
     end
 
     subgraph Microservices["Microservices Architecture"]
         MS_UI["Web / Mobile UI"] --> MS_GW["API Gateway"]
-        MS_GW --> S1["Auth Service"] --> DB1[("Auth DB")]
-        MS_GW --> S2["Order Service"] --> DB2[("Order DB")]
-        MS_GW --> S3["Payment Service"] --> DB3[("Payment DB")]
-        MS_GW --> S4["Inventory Service"] --> DB4[("Inventory DB")]
+        MS_GW --> S1["Auth Service"]
+        MS_GW --> S2["Order Service"]
+        MS_GW --> S3["Payment Service"]
+        MS_GW --> S4["Inventory Service"]
+        S1 --> DB1[("Auth DB")]
+        S2 --> DB2[("Order DB")]
+        S3 --> DB3[("Payment DB")]
+        S4 --> DB4[("Inventory DB")]
     end
 ```
 
@@ -34,14 +38,14 @@ In dynamic cloud environments (Kubernetes, AWS ECS), service IP addresses change
 
 ```mermaid
 flowchart TD
-    subgraph ClientSideDiscovery["1. Client-Side Discovery (e.g. Eureka / Ribbon)"]
-        C_Client["Service A"] -->|1. Query Active IPs| C_Registry["Service Registry (Consul / Eureka)"]
-        C_Client -->|2. Direct RPC with local LB| C_Target["Service B (Pod 10.0.4.12)"]
+    subgraph ClientSideDiscovery["1. Client-Side Discovery (Eureka)"]
+        C_Client["Service A"] -->|1. Query Active IPs| C_Registry["Registry (Consul)"]
+        C_Client -->|2. Direct RPC| C_Target["Service B (Pod IP)"]
     end
 
-    subgraph ServerSideDiscovery["2. Server-Side Discovery (e.g. Kubernetes / AWS ALB)"]
-        S_Client["Service A"] -->|1. Call 'service-b.internal'| S_LB["Load Balancer / K8s CoreDNS + Proxy"]
-        S_LB -->|2. Reroutes to healthy Pod| S_Target["Service B (Pod 10.0.4.12)"]
+    subgraph ServerSideDiscovery["2. Server-Side Discovery (K8s)"]
+        S_Client["Service A"] -->|1. Call DNS| S_LB["K8s Proxy / ALB"]
+        S_LB -->|2. Forward to Pod| S_Target["Service B (Pod IP)"]
     end
 ```
 
@@ -73,17 +77,16 @@ When each microservice has its own isolated database, ACID transactions across m
 
 ```mermaid
 flowchart TD
-    subgraph SagaChoreography["1. Choreography-Based Saga (Event-Driven)"]
-        O1["Order Svc (Created)"] -->|Event: OrderCreated| P1["Payment Svc (Charges Card)"]
-        P1 -->|Event: PaymentSuccess| I1["Inventory Svc (Reserves Stock)"]
-        I1 -.->|On Out-of-Stock: PaymentFailed| P1Comp["Compensating Txn: Refund Card"]
+    subgraph SagaChoreography["1. Choreography Saga (Event-Driven)"]
+        O1["Order Svc"] -->|OrderCreated| P1["Payment Svc"]
+        P1 -->|PaymentSuccess| I1["Inventory Svc"]
+        I1 -.->|Out of Stock| P1Comp["Compensate: Refund Card"]
     end
 
-    subgraph SagaOrchestration["2. Orchestration-Based Saga (Central Coordinator)"]
-        Orch["Saga Orchestrator<br/>(e.g. Temporal / AWS Step Functions)"]
-        Orch -->|1. Execute| Svc1["Order Service"]
-        Orch -->|2. Execute| Svc2["Payment Service"]
-        Orch -->|3. Execute| Svc3["Inventory Service"]
+    subgraph SagaOrchestration["2. Orchestration Saga (Temporal)"]
+        Orch["Saga Orchestrator"]
+        Orch -->|1. Charge| Svc2["Payment Service"]
+        Orch -->|2. Reserve| Svc3["Inventory Service"]
         Orch -.->|On Failure: Compensate| Svc2Refund["Refund Payment"]
     end
 ```

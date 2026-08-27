@@ -73,15 +73,15 @@ sequenceDiagram
 ```mermaid
 flowchart TD
     subgraph H1["HTTP/1.1 (1997)"]
-        H1A["1 Request per TCP Connection<br/>Head-of-Line Blocking at App Layer<br/>Text Headers uncompressed"]
+        H1A["1 Req per TCP Connection<br/>Head-of-Line Blocking<br/>Uncompressed Headers"]
     end
     
     subgraph H2["HTTP/2 (2015)"]
-        H2A["Binary Framing Layer<br/>Multiplexing over 1 TCP Connection<br/>HPACK Header Compression<br/>Server Push<br/>⚠️ TCP Head-of-Line Blocking on Packet Loss"]
+        H2A["Binary Multiplexing<br/>Single TCP Connection<br/>HPACK Header Compression<br/>TCP HOL Blocking on Loss"]
     end
 
     subgraph H3["HTTP/3 (QUIC - 2022)"]
-        H3A["Runs over UDP using QUIC<br/>Zero RTT Handshake (TLS 1.3 built-in)<br/>Independent Stream Multiplexing<br/>No TCP Head-of-Line Blocking<br/>Connection Migration (Wi-Fi to 5G)"]
+        H3A["Runs over UDP (QUIC)<br/>0-RTT TLS 1.3 Handshake<br/>Zero Stream HOL Blocking<br/>Connection IP Migration"]
     end
 ```
 
@@ -102,10 +102,10 @@ How do we push real-time updates (chat, live notifications, market tickers)?
 
 ```mermaid
 flowchart TD
-    Client["Client App"] --> Poll["Short Polling<br/>(Client periodically sends GET every X sec)"]
-    Client --> LongPoll["Long Polling<br/>(Server holds request open until new data arrives)"]
-    Client --> SSE["Server-Sent Events (SSE)<br/>(Unidirectional streaming over HTTP text/event-stream)"]
-    Client --> WS["WebSockets<br/>(Full-Duplex bidirectional persistent TCP socket)"]
+    Client["Client App"] --> Poll["Short Polling<br/>(Periodic GET requests)"]
+    Client --> LongPoll["Long Polling<br/>(Hangs until new event)"]
+    Client --> SSE["Server-Sent Events<br/>(Unidirectional Stream)"]
+    Client --> WS["WebSockets<br/>(Bidirectional TCP Socket)"]
 ```
 
 | Protocol | Direction | Overhead | Reconnection | Best Use Case |
@@ -121,9 +121,9 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A["API Paradigms"] --> B["REST (Resource-Oriented / JSON / HTTP 1.1 & 2)"]
-    A --> C["GraphQL (Query-Driven / Flexible / Client-specified)"]
-    A --> D["gRPC (RPC / Protocol Buffers / HTTP/2 & 3 / High Throughput)"]
+    A["API Paradigms"] --> B["REST<br/>(JSON / HTTP 1.1 & 2)"]
+    A --> C["GraphQL<br/>(Flexible Client Queries)"]
+    A --> D["gRPC<br/>(Protobuf / High Throughput)"]
 ```
 
 | Dimension | REST | GraphQL | gRPC |

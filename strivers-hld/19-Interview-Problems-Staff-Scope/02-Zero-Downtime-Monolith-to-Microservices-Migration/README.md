@@ -8,20 +8,20 @@ flowchart TD
 
     subgraph LegacyMonolith["Legacy Monolithic Infrastructure"]
         MonolithApp["Monolithic Rails App"]
-        MonolithDB[("20TB Primary Monolith Postgres DB")]
+        MonolithDB[("Monolith DB (Postgres)")]
         MonolithApp --> MonolithDB
     end
 
     subgraph ModernCheckoutDomain["Modern Checkout Microservice"]
         NewOrderSvc["New Order Service (Go / Spring Boot)"]
-        NewOrderDB[("New Sharded Order DB")]
+        NewOrderDB[("New Order DB")]
         NewOrderSvc --> NewOrderDB
     end
 
     subgraph AsyncSyncTier["CDC & Reconciliation Pipeline"]
         DebeziumCDC["Debezium CDC (Postgres WAL)"]
         Kafka["Kafka Event Stream (Topic: db_cdc_orders)"]
-        ReconWorker["Shadow Traffic Diff / Reconciliation Worker"]
+        ReconWorker["Shadow Diff Worker"]
         
         MonolithDB --> DebeziumCDC --> Kafka --> ReconWorker
         NewOrderDB --> ReconWorker

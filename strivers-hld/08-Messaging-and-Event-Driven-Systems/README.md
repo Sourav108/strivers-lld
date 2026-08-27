@@ -4,19 +4,17 @@
 
 ```mermaid
 flowchart TD
-    subgraph PTP["Point-to-Point Queue (e.g., RabbitMQ / AWS SQS)"]
+    subgraph PTP["Point-to-Point Queue (RabbitMQ / SQS)"]
         Producer1["Producer"] --> Queue["Task Queue"]
-        Queue --> Worker1["Worker 1 (Processes Job A)"]
-        Queue --> Worker2["Worker 2 (Processes Job B)"]
-        style Queue fill:#f9f,stroke:#333
+        Queue --> Worker1["Worker 1 (Job A)"]
+        Queue --> Worker2["Worker 2 (Job B)"]
     end
 
-    subgraph PubSub["Publish-Subscribe Stream (e.g., Apache Kafka)"]
-        Producer2["Producer"] --> Topic["Topic (Immutable Log)"]
-        Topic --> CG1["Consumer Group 1 (Analytics Service)"]
-        Topic --> CG2["Consumer Group 2 (Email Notification Service)"]
-        Topic --> CG3["Consumer Group 3 (Fraud Detection Service)"]
-        style Topic fill:#bbf,stroke:#333
+    subgraph PubSub["Pub-Sub Stream (Kafka)"]
+        Producer2["Producer"] --> Topic["Topic Log"]
+        Topic --> CG1["Consumer Group 1 (Analytics)"]
+        Topic --> CG2["Consumer Group 2 (Email)"]
+        Topic --> CG3["Consumer Group 3 (Fraud)"]
     end
 ```
 
@@ -57,19 +55,19 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    subgraph CommandSide["Write Path (Command Model - High Consistency)"]
-        ClientWrite["Write Request: CreateOrder()"] --> API["Order API"]
-        API --> CommandStore["Append Immutable Event -> EventStore (Kafka / PostgreSQL)"]
+    subgraph CommandSide["Write Path (Command Model)"]
+        ClientWrite["CreateOrder()"] --> API["Order API"]
+        API --> CommandStore["Append to WAL<br/>(Postgres / Kafka)"]
     end
 
     subgraph EventStream["Event Streaming"]
-        CommandStore --> KafkaTopic["Event: OrderCreatedEvent"]
+        CommandStore --> KafkaTopic["Event: OrderCreated"]
     end
 
-    subgraph QuerySide["Read Path (Query Model - Optimized for Fast Reads)"]
+    subgraph QuerySide["Read Path (Query Model)"]
         KafkaTopic --> Projector["Read Model Projector"]
-        Projector --> ReadDB["Read DB (ElasticSearch / MongoDB / Redis View)"]
-        ClientRead["Read Query: GetOrderDetails()"] --> ReadDB
+        Projector --> ReadDB["Read DB<br/>(ElasticSearch / Redis)"]
+        ClientRead["GetOrderDetails()"] --> ReadDB
     end
 ```
 

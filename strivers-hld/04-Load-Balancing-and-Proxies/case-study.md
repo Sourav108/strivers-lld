@@ -6,12 +6,12 @@ Handling millions of requests per second requires intelligent traffic routing at
 
 ```mermaid
 flowchart TD
-    User["Global Users"] --> Anycast["BGP Anycast Edge (Cloudflare 300+ PoPs)"]
-    Anycast --> Unimog["Unimog L4 Load Balancer (XDP / eBPF)"]
-    Unimog --> Pingora["Pingora / NGINX L7 Reverse Proxy (Rust)"]
-    Pingora --> Origin["Origin Cloud Datacenters"]
-    Origin --> EnvoyEdge["Lyft Envoy Front Proxy"]
-    EnvoyEdge --> Mesh["Internal Envoy Service Mesh (East-West Routing)"]
+    User["Global Users"] --> Anycast["Anycast Edge (300+ PoPs)"]
+    Anycast --> Unimog["Unimog L4 (XDP / eBPF)"]
+    Unimog --> Pingora["Pingora L7 Proxy (Rust)"]
+    Pingora --> Origin["Origin Datacenters"]
+    Origin --> EnvoyEdge["Envoy Ingress Gateway"]
+    EnvoyEdge --> Mesh["Envoy Service Mesh"]
 ```
 
 ---

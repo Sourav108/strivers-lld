@@ -5,18 +5,20 @@
 LinkedIn initially connected services with point-to-point batch ETL pipelines. As the number of microservices and data sinks (Hadoop, Elasticsearch, Oracle, In-memory caches) grew, the architecture degenerated into an unmaintainable $N \times M$ mesh of fragile integrations.
 
 ```mermaid
-flowchart LR
-    subgraph LinkedInScale["LinkedIn Global Kafka Ecosystem (7+ Trillion Messages/Day)"]
-        Activity["User Tracking / Page Views"] --> LocalKafka["Local Datacenter Kafka Cluster"]
-        DBMetrics["DB Change Logs (Debezium CDC)"] --> LocalKafka
-        ServiceMetrics["Service Call Logs"] --> LocalKafka
+flowchart TD
+    subgraph LocalDC["Local Datacenter Cluster"]
+        Activity["User Tracking"] --> LocalKafka["Local Kafka"]
+        DBMetrics["CDC Logs"] --> LocalKafka
+        ServiceMetrics["Service Logs"] --> LocalKafka
+    end
 
-        LocalKafka --> Brooklin["Brooklin / MirrorMaker 2 (Mirroring Engine)"]
-        Brooklin --> GlobalKafka["Global Aggregated Kafka Cluster"]
+    LocalKafka --> Brooklin["MirrorMaker 2 / Brooklin"]
+    Brooklin --> GlobalKafka["Global Aggregated Kafka"]
 
-        GlobalKafka --> RealTime["Real-Time Stream Processing (Apache Samza / Flink)"]
-        GlobalKafka --> Hadoop["Data Lake (Apache Iceberg / HDFS)"]
-        GlobalKafka --> Pinot["Apache Pinot (Real-Time Analytical OLAP)"]
+    subgraph Sinks["Downstream Consumers"]
+        GlobalKafka --> RealTime["Stream Analytics (Flink)"]
+        GlobalKafka --> Hadoop["Data Lake (Iceberg)"]
+        GlobalKafka --> Pinot["OLAP (Pinot)"]
     end
 ```
 

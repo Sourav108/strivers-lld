@@ -42,11 +42,17 @@ flowchart TD
 When cache memory fills up to its limit (e.g. `maxmemory` in Redis), the eviction policy decides which keys to purge:
 
 ```mermaid
-flowchart LR
-    Policies["Eviction Policies"] --> LRU["LRU (Least Recently Used)<br/>Evicts keys not accessed for the longest time<br/>(Doubly Linked List + Hash Map)"]
-    Policies --> LFU["LFU (Least Frequently Used)<br/>Evicts keys with lowest access frequency counter"]
-    Policies --> FIFO["FIFO (First In First Out)<br/>Evicts oldest key based on insertion time"]
-    Policies --> TTL["Volatile-TTL<br/>Evicts keys with the shortest remaining TTL"]
+flowchart TD
+    Policies["Eviction Policies"]
+    
+    subgraph EvictionTypes["Policy Types"]
+        LRU["1. LRU<br/>(Least Recently Used)"]
+        LFU["2. LFU<br/>(Least Frequently Used)"]
+        FIFO["3. FIFO<br/>(First In First Out)"]
+        TTL["4. Volatile-TTL<br/>(Shortest Remaining TTL)"]
+    end
+
+    Policies --> EvictionTypes
 ```
 
 ---
@@ -54,19 +60,20 @@ flowchart LR
 ## ⚔️ 3. Redis vs Memcached
 
 ```mermaid
-flowchart LR
+flowchart TD
     subgraph Redis["Redis Architecture"]
-        R1["Single-Threaded Event Loop (Redis 6+ I/O threads)"]
-        R2["Rich Data Types: Strings, Hashes, Lists, Sets, Sorted Sets, HyperLogLog, Bitmaps, Streams"]
-        R3["Persistence: RDB Snapshots & AOF Log"]
-        R4["Replication: Master-Replica + Redis Sentinel / Cluster"]
-        R5["Lua Scripting & Pub/Sub"]
+        direction TB
+        R1["Single-Threaded Engine"]
+        R2["Rich Data Types (Hashes, Sets, ZSET)"]
+        R3["Persistence (RDB & AOF)"]
+        R4["Clustering (16k Hash Slots)"]
     end
 
     subgraph Memcached["Memcached Architecture"]
-        M1["Multi-Threaded Architecture (scales linearly with CPU cores)"]
-        M2["Simple Key-Value Strings / Blobs only"]
-        M3["Pure In-Memory (No persistence, restarts lose all data)"]
+        direction TB
+        M1["Multi-Threaded Engine"]
+        M2["Simple Key-Value Blobs"]
+        M3["Volatile In-Memory Only"]
         M4["Client-Side Consistent Hashing"]
     end
 ```
@@ -86,23 +93,25 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph Disasters["Cache Failure Modes"]
-        D1["1. Cache Penetration<br/>(Queries for non-existent keys bypass cache to DB)"]
-        D2["2. Cache Breakdown / Stampede<br/>(Hot key expires -> 100k queries hit DB simultaneously)"]
-        D3["3. Cache Avalanche<br/>(Massive number of keys expire at the exact same second)"]
-        D4["4. Hot Spot Concurrency<br/>(Single celebrity key overwhelms single cache node)"]
+        direction TB
+        D1["1. Cache Penetration<br/>(Non-existent keys hit DB)"]
+        D2["2. Cache Breakdown<br/>(Hot key expires -> DB spike)"]
+        D3["3. Cache Avalanche<br/>(Keys expire simultaneously)"]
+        D4["4. Hot Key Overload<br/>(Celebrity key saturates node)"]
     end
 
     subgraph Mitigations["Production Mitigations"]
-        M1["🛡️ Bloom Filter at Gateway + Cache Null values with short TTL"]
-        M2["🔒 Distributed Mutex Lock (Redlock) or Logical Expiry in Background"]
-        M3["🎲 Add Random Jitter to TTL (e.g. TTL = Base + rand(0, 300s))"]
-        M4["⚡ Local In-Memory Cache (Caffeine/Guava) or Key Replication (key:1, key:2)"]
+        direction TB
+        M1["Bloom Filter + Cache Nulls"]
+        M2["Mutex Lock (Redlock)"]
+        M3["Random TTL Jitter"]
+        M4["L1 Local RAM + Key Splitting"]
     end
 
-    D1 ==> M1
-    D2 ==> M2
-    D3 ==> M3
-    D4 ==> M4
+    D1 --> M1
+    D2 --> M2
+    D3 --> M3
+    D4 --> M4
 ```
 
 ---

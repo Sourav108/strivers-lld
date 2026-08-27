@@ -15,10 +15,10 @@ flowchart TD
     end
     
     subgraph LLD["Low-Level Design (Micro Architecture)"]
-        G["Class Diagrams & Interfaces"]
-        H["Design Patterns (Factory, Strategy, Observer)"]
-        I["Concurrency & Thread Safety (Locks, Semaphores)"]
-        J["SOLID Principles & Clean Code"]
+        G["Class Diagrams & OOP"]
+        H["Design Patterns<br/>(Factory, Strategy, Observer)"]
+        I["Concurrency & Threading<br/>(Locks, Semaphores)"]
+        J["SOLID & Clean Code"]
     end
     
     HLD -.->|"Implemented By"| LLD

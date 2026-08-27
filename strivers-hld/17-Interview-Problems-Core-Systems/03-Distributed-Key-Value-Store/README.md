@@ -6,7 +6,7 @@
 flowchart TD
     Client["Client App"] --> Coord["Coordinator Node (Any Node in Cluster)"]
 
-    subgraph HashRing["Consistent Hash Ring (Token Range 0 to 2^32-1)"]
+    subgraph HashRing["Consistent Hash Ring (0 to 2^32-1)"]
         NodeA["Node A (Tokens: 0..25%)"]
         NodeB["Node B (Tokens: 25%..50%)"]
         NodeC["Node C (Tokens: 50%..75%)"]

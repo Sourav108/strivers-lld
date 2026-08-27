@@ -6,10 +6,10 @@ A Staff/Principal Engineer builds systems consumed not just by end-users, but by
 
 ```mermaid
 flowchart TD
-    subgraph MultiTenantPlatform["Shared Internal Platform (e.g. Experimentation, Notifications, Payments)"]
-        Gateway["Platform Gateway (Tenant Quotas & Auth)"]
+    subgraph MultiTenantPlatform["Shared Platform (Multi-Tenant)"]
+        Gateway["Platform Gateway<br/>(Quotas & Auth)"]
         Gateway --> Engine["Core Platform Engine"]
-        Engine --> Isolation["Tenant Isolation Tier (Noisy Neighbor Protection)"]
+        Engine --> Isolation["Tenant Isolation<br/>(Noisy Neighbor Shield)"]
     end
 
     TeamA["Product Team A (Checkout)"] -->|SDK Integration| Gateway
@@ -37,10 +37,14 @@ At top tech firms (Google, Amazon, Meta, Stripe), major architectural decisions 
 ## 🛡️ 3. Defending Technical Trade-offs Under Pushback
 
 ```mermaid
-flowchart LR
-    Pushback["Stakeholder Pushback (Product / Eng Manager / Security)"]
+flowchart TD
+    Pushback["Stakeholder Pushback<br/>(Product / Security)"]
     
-    Pushback --> D1["1. Acknowledge Constraint<br/>'I understand that shipping next week is high priority.'"]
-    D1 --> D2["2. Frame Trade-off in Business Terms<br/>'Skipping idempotency now will cause ~$50k in double-charge refund tickets.'"]
-    D2 --> D3["3. Propose Phased Compromise<br/>'Phase 1: Launch MVP with Redis token lock in 3 days.<br/>Phase 2: Add full Saga reconciliation in sprint 2.'"]
+    subgraph DefenseFramework["3-Step Defense Framework"]
+        D1["1. Acknowledge Constraint<br/>(Validate urgency/timeline)"]
+        D2["2. Quantify Business Risk<br/>(e.g., $50k in refund tickets)"]
+        D3["3. Phased Compromise<br/>(Phase 1 MVP + Phase 2 Hardening)"]
+    end
+
+    Pushback --> DefenseFramework
 ```

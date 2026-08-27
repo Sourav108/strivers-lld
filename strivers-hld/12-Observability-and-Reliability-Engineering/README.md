@@ -6,9 +6,15 @@ In complex distributed architectures with hundreds of microservices, traditional
 
 ```mermaid
 flowchart TD
-    Obs["Observability Core Pillars"] --> M["1. Metrics (Aggregatable Numbers)<br/>- CPU, QPS, Memory, Error Rates<br/>- Tools: Prometheus, Grafana, Datadog"]
-    Obs --> L["2. Logs (Contextual Event Strings)<br/>- Timestamped Structured JSON logs<br/>- Tools: ELK (Elasticsearch/Logstash/Kibana), Loki"]
-    Obs --> T["3. Distributed Traces (Request Journeys)<br/>- End-to-end timeline across microservices<br/>- Tools: OpenTelemetry, Jaeger, Zipkin"]
+    Obs["Observability Core Pillars"]
+    
+    subgraph Pillars["Telemetry Types"]
+        M["1. Metrics<br/>(Prometheus / Datadog)"]
+        L["2. Logs<br/>(ELK / Loki / FluentBit)"]
+        T["3. Distributed Traces<br/>(Jaeger / OpenTelemetry)"]
+    end
+
+    Obs --> Pillars
 ```
 
 ---
@@ -69,12 +75,12 @@ In container orchestration platforms (Kubernetes), two distinct health probes pr
 ```mermaid
 flowchart TD
     subgraph Liveness["Liveness Probe (/healthz)"]
-        L1["Checks: Is the process deadlocked or out-of-memory?"]
-        L2["Action on Failure: Kubernetes instantly kills and restarts the container."]
+        L1["Checks: Is process deadlocked?"]
+        L2["Action: K8s kills & restarts pod"]
     end
 
     subgraph Readiness["Readiness Probe (/ready)"]
-        R1["Checks: Has the container finished warming caches & loading DB connections?"]
-        R2["Action on Failure: Load Balancer temporarily removes pod from routing pool (does NOT restart)."]
+        R1["Checks: Warmed caches & DB conns?"]
+        R2["Action: LB removes from routing pool"]
     end
 ```

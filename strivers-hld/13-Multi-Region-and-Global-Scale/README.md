@@ -6,16 +6,16 @@ Deploying across multiple geographic regions is mandatory for 99.999% availabili
 
 ```mermaid
 flowchart TD
-    subgraph ActivePassive["1. Active-Passive (Warm Standby / Disaster Recovery)"]
-        AP_DNS["Route 53 Geolocation DNS"] -->|100% Writes & Reads| AP_Primary["Primary Region (US-East)"]
-        AP_Primary -.->|Async Cross-Region DB Sync| AP_Standby["Standby Region (EU-West)"]
-        AP_Primary -.->|Heartbeat Health Check Fails| AP_Failover["Automated DNS Switch & Promote DB (RTO < 5m)"]
+    subgraph ActivePassive["1. Active-Passive (Disaster Recovery)"]
+        AP_DNS["GeoDNS"] -->|100% Writes| AP_Primary["Primary (US-East)"]
+        AP_Primary -.->|Async Cross-Region DB Sync| AP_Standby["Standby (EU-West)"]
+        AP_Primary -.->|Failover Alert| AP_Failover["Promote Standby<br/>(RTO < 5m)"]
     end
 
-    subgraph ActiveActive["2. Active-Active (Multi-Region Masterless)"]
-        AA_Anycast["BGP Anycast Edge"] -->|EU Users| AA_EU["EU-Central Datacenter (100% Active)"]
-        AA_Anycast -->|US Users| AA_US["US-East Datacenter (100% Active)"]
-        AA_EU <-->|Bidirectional Async Replication + Conflict Resolution (CRDTs)| AA_US
+    subgraph ActiveActive["2. Active-Active (Global Multi-Master)"]
+        AA_Anycast["Anycast Edge"] -->|EU Users| AA_EU["EU Datacenter (Active)"]
+        AA_Anycast -->|US Users| AA_US["US Datacenter (Active)"]
+        AA_EU <-->|Bidirectional Async Replication (CRDTs)| AA_US
     end
 ```
 
@@ -30,9 +30,15 @@ flowchart TD
 ## ⚡ 2. Global Traffic Routing: Anycast vs GeoDNS
 
 ```mermaid
-flowchart LR
-    Routing["Global Ingress Routing"] --> Anycast["1. BGP Anycast<br/>- Same IP announced from 300+ PoPs<br/>- Routers automatically send packets to closest node<br/>- Instant millisecond failover"]
-    Routing --> GeoDNS["2. GeoDNS (Route 53)<br/>- Resolves different IPs based on user IP<br/>- Prone to DNS caching & TTL delay (minutes)"]
+flowchart TD
+    Routing["Global Ingress"]
+    
+    subgraph RoutingOptions["Routing Mechanisms"]
+        Anycast["1. BGP Anycast<br/>(Same IP globally, instant failover)"]
+        GeoDNS["2. GeoDNS (Route 53)<br/>(Resolves by client IP, DNS TTL delay)"]
+    end
+
+    Routing --> RoutingOptions
 ```
 
 ---

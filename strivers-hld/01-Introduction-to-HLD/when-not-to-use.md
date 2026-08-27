@@ -6,9 +6,9 @@ Reaching for a 20-microservice distributed architecture with Kafka, Kubernetes, 
 
 ```mermaid
 flowchart TD
-    Start["New Project / Early Stage Startup"] --> ScaleCheck{"Is QPS > 5,000 OR Team > 50 Engineers?"}
-    ScaleCheck -->|No| Monolith["Build a Clean Modular Monolith<br/>- Single PostgreSQL database<br/>- Zero network latency overhead<br/>- Simple ACID transactions<br/>- Rapid feature iteration"]
-    ScaleCheck -->|Yes| Microservices["Decompose into Microservices<br/>- Dedicated Domain boundaries<br/>- Database-per-service<br/>- Event-driven streaming"]
+    Start["New Project / Startup"] --> ScaleCheck{"Scale Check:<br/>QPS > 5,000 OR<br/>Team > 50?"}
+    ScaleCheck -->|No| Monolith["Modular Monolith<br/>(PostgreSQL + In-Process)"]
+    ScaleCheck -->|Yes| Microservices["Microservices<br/>(Domain DBs + Kafka)"]
 ```
 
 ---

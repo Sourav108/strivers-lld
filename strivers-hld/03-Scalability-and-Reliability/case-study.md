@@ -6,23 +6,21 @@ Netflix streams millions of hours of video daily across hundreds of AWS availabi
 
 ```mermaid
 flowchart TD
-    subgraph NetflixGlobal["Netflix Multi-Region Active-Active Topology"]
-        DNS["Route 53 / Zuul Edge Routing"]
-        
-        subgraph RegionUS["AWS us-east-1 (Active)"]
-            LB1["Load Balancer"] --> App1["Microservices Cluster"]
-            App1 --> DB1["Cassandra Multi-Region Cluster"]
-        end
-
-        subgraph RegionEU["AWS eu-west-1 (Active)"]
-            LB2["Load Balancer"] --> App2["Microservices Cluster"]
-            App2 --> DB2["Cassandra Multi-Region Cluster"]
-        end
-
-        DNS -->|50% Traffic| LB1
-        DNS -->|50% Traffic| LB2
-        DB1 <-->|Asynchronous Global Replication| DB2
+    DNS["Edge Gateway (Zuul)"]
+    
+    subgraph RegionUS["AWS us-east-1 (Active)"]
+        LB1["Load Balancer"] --> App1["Services Fleet"]
+        App1 --> DB1["Cassandra Cluster"]
     end
+
+    subgraph RegionEU["AWS eu-west-1 (Active)"]
+        LB2["Load Balancer"] --> App2["Services Fleet"]
+        App2 --> DB2["Cassandra Cluster"]
+    end
+
+    DNS -->|US Users| LB1
+    DNS -->|EU Users| LB2
+    DB1 <-->|Async Cross-Region Sync| DB2
 ```
 
 ---

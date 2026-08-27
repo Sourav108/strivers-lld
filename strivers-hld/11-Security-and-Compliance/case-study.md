@@ -6,10 +6,10 @@ As the financial infrastructure for the internet, Stripe handles trillions of do
 
 ```mermaid
 flowchart TD
-    Merchant["Merchant API Call"] --> Cloudflare["Cloudflare DDoS & Anycast Shield"]
-    Cloudflare --> RateLimiter["Stripe Edge Rate Limiter (Redis / Envoy)"]
-    RateLimiter --> Tokenizer["PCI-Compliant Tokenization Vault (Hardware HSM)"]
-    Tokenizer --> CoreAPI["Core Ledger & Payment Processing"]
+    Merchant["Merchant API Call"] --> Cloudflare["Cloudflare Edge"]
+    Cloudflare --> RateLimiter["Rate Limiter (Envoy)"]
+    RateLimiter --> Tokenizer["PCI Token Vault (HSM)"]
+    Tokenizer --> CoreAPI["Core Payment Ledger"]
 ```
 
 ---

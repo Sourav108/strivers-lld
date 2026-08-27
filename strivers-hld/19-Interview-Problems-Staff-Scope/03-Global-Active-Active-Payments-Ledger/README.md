@@ -6,17 +6,17 @@
 flowchart TD
     subgraph US_Region["Americas Region (Active)"]
         US_GW["US Edge Gateway"] --> US_Ledger["US Ledger Service"]
-        US_Ledger --> US_Spanner["Google Spanner / CockroachDB (US Multi-AZ Range)"]
+        US_Ledger --> US_Spanner["CockroachDB (US Range)"]
     end
 
     subgraph EU_Region["Europe Region (Active)"]
         EU_GW["EU Edge Gateway"] --> EU_Ledger["EU Ledger Service"]
-        EU_Ledger --> EU_Spanner["CockroachDB (EU Multi-AZ Range - GDPR Compliant)"]
+        EU_Ledger --> EU_Spanner["CockroachDB (EU Range - GDPR)"]
     end
 
     subgraph APAC_Region["Asia-Pacific Region (Active)"]
         APAC_GW["APAC Edge Gateway"] --> APAC_Ledger["APAC Ledger Service"]
-        APAC_Ledger --> APAC_Spanner["CockroachDB (APAC Multi-AZ Range)"]
+        APAC_Ledger --> APAC_Spanner["CockroachDB (APAC Range)"]
     end
 
     US_Spanner <-->|Asynchronous Global Inter-Region Sync| EU_Spanner

@@ -7,19 +7,19 @@ flowchart TD
     Client["User Opens Feed"] --> Gateway["API Gateway"]
     Gateway --> FeedAggregator["Feed Aggregator Service"]
 
-    subgraph CandidateGeneration["Stage 1: Fast Candidate Retrieval (10ms)"]
-        FeedAggregator --> RedisTimeline["Redis Followee Timelines (500 items)"]
-        FeedAggregator --> RecEngine["Vector Search / Recommendations (500 items)"]
+    subgraph CandidateGeneration["Stage 1: Candidate Retrieval (10ms)"]
+        FeedAggregator --> RedisTimeline["Redis Followee Timelines<br/>(500 candidates)"]
+        FeedAggregator --> RecEngine["Vector Recommendations<br/>(500 candidates)"]
     end
 
-    subgraph MLRankingPipeline["Stage 2 & 3: Heavy Scoring & Reranking (40ms)"]
-        FeedAggregator --> FeatureStore["Real-Time Feature Store (Redis / Feast)"]
-        FeedAggregator --> MLScorer["ML Ranking Model (Two-Tower / GBDT)"]
-        MLScorer --> DiversityFilter["Business Rules & Diversity Filter (Deduplicate creators)"]
+    subgraph MLRankingPipeline["Stage 2: Scoring & Reranking (40ms)"]
+        FeedAggregator --> FeatureStore["Feature Store (Redis)"]
+        FeedAggregator --> MLScorer["ML Two-Tower Model"]
+        MLScorer --> DiversityFilter["Diversity Filter"]
     end
 
     DiversityFilter --> Top50["Top 50 Ranked Posts"]
-    Top50 --> Hydrator["Post Hydration Service (Text + Media URLs)"]
+    Top50 --> Hydrator["Post Hydration (Media URLs)"]
     Hydrator --> Gateway
 ```
 

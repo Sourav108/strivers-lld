@@ -7,10 +7,11 @@ In hyperscale distributed systems, **hardware failure is not an anomaly; it is a
 ```mermaid
 flowchart TD
     subgraph FailureModes["Failure Mitigation Arsenal"]
-        FM1["1. Chaos Engineering (Proactively kill nodes in production)"]
-        FM2["2. Backpressure & Load Shedding (Drop low-priority traffic under load)"]
-        FM3["3. Graceful Degradation (Serve cached/static fallbacks)"]
-        FM4["4. Blast-Radius Containment (Cell-based isolation)"]
+        direction TB
+        FM1["1. Chaos Engineering<br/>(Kill production nodes)"]
+        FM2["2. Backpressure & Load Shedding<br/>(Drop low-priority traffic)"]
+        FM3["3. Graceful Degradation<br/>(Serve cached fallbacks)"]
+        FM4["4. Blast-Radius Containment<br/>(Cell-based architecture)"]
     end
 ```
 

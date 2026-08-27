@@ -6,10 +6,10 @@ Traditional master-slave databases collapse under write-intensive petabyte workl
 
 ```mermaid
 flowchart TD
-    subgraph CassandraRing["Cassandra Distributed Ring (Token Range -2^63 to +2^63-1)"]
-        Node1["Node 1 (Tokens: 0..25%)"] --> Node2["Node 2 (Tokens: 25%..50%)"]
-        Node2 --> Node3["Node 3 (Tokens: 50%..75%)"]
-        Node3 --> Node4["Node 4 (Tokens: 75%..100%)"]
+    subgraph CassandraRing["Cassandra Distributed Ring"]
+        Node1["Node 1 (0..25%)"] --> Node2["Node 2 (25%..50%)"]
+        Node2 --> Node3["Node 3 (50%..75%)"]
+        Node3 --> Node4["Node 4 (75%..100%)"]
         Node4 --> Node1
     end
 ```

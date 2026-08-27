@@ -10,7 +10,7 @@ flowchart TD
         Client["Global Client"] --> F1["F1 SQL Query Engine"]
         F1 --> Spanserver1["Spanserver US (Paxos Group)"]
         F1 --> Spanserver2["Spanserver EU (Paxos Group)"]
-        Spanserver1 & Spanserver2 <--> TT["Google TrueTime API (GPS Receivers + Atomic Clocks)"]
+        Spanserver1 & Spanserver2 <--> TT["Google TrueTime API<br/>(GPS + Atomic Clocks)"]
     end
 
     subgraph K8s["Kubernetes Control Plane (etcd)"]

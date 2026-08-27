@@ -6,10 +6,16 @@ When a dataset exceeds the storage or I/O capacity of a single database server, 
 
 ```mermaid
 flowchart TD
-    Sharding["Sharding Strategies"] --> Range["1. Range-Based Sharding<br/>(e.g., A-F on Shard 1, G-M on Shard 2)<br/>⚠️ Risk of hot spots on active ranges"]
-    Sharding --> Hash["2. Hash-Based Sharding<br/>(e.g., hash(user_id) % N)<br/>✅ Even distribution<br/>⚠️ Expensive re-sharding when N changes"]
-    Sharding --> Directory["3. Directory / Lookup-Based<br/>(Lookup service maps key -> Shard ID)<br/>✅ Dynamic flexibility<br/>⚠️ Lookup service becomes bottleneck"]
-    Sharding --> Geo["4. Geographic Sharding<br/>(e.g., EU users -> EU DB, US users -> US DB)<br/>✅ Low latency & GDPR compliance"]
+    Sharding["Sharding Strategies"]
+    
+    subgraph DataPartitioning["Partitioning Approaches"]
+        Range["1. Range-Based<br/>(Key ranges e.g. A-M, N-Z)"]
+        Hash["2. Hash-Based<br/>(hash key modulo N)"]
+        Directory["3. Directory / Lookup<br/>(Central metadata map)"]
+        Geo["4. Geographic<br/>(EU vs US user residency)"]
+    end
+
+    Sharding --> DataPartitioning
 ```
 
 | Strategy | Pros | Cons | Best Use Case |
@@ -32,10 +38,10 @@ Consistent Hashing maps both **Servers** and **Keys** onto a circular 32-bit has
 
 ```mermaid
 flowchart TD
-    subgraph HashRing["Consistent Hashing 360° Ring (0 to 2^32-1)"]
+    subgraph HashRing["Consistent Hash Ring (0 to 2^32-1)"]
         direction TB
-        N1["Node A (Position 1000)"] -->|Clockwise Key Allocation| N2["Node B (Position 5000)"]
-        N2 --> N3["Node C (Position 9000)"]
+        N1["Node A (Pos: 1000)"] -->|Clockwise Key Allocation| N2["Node B (Pos: 5000)"]
+        N2 --> N3["Node C (Pos: 9000)"]
         N3 --> N1
     end
 ```
@@ -48,9 +54,9 @@ If physical servers are placed unevenly on the ring, one server might handle 70%
 
 ```mermaid
 flowchart LR
-    Physical["Physical Server A"] --> V1["Virtual Node A-1 (Pos: 230)"]
-    Physical --> V2["Virtual Node A-2 (Pos: 4500)"]
-    Physical --> V3["Virtual Node A-3 (Pos: 8900)"]
+    Physical["Server A"] --> V1["Vnode A-1"]
+    Physical --> V2["Vnode A-2"]
+    Physical --> V3["Vnode A-3"]
 ```
 
 - Each physical server is assigned **100–300 virtual nodes** across the ring.
@@ -70,13 +76,13 @@ $$\mathbf{R + W > N} \implies \text{\textbf{Strong Consistency Guarantee}}$$
 
 ```mermaid
 flowchart LR
-    Client["Client Write Request"] --> Coord["Coordinator Node"]
+    Client["Client Write"] --> Coord["Coordinator Node"]
     Coord -->|Write 1| R1["Replica 1 (Ack)"]
     Coord -->|Write 2| R2["Replica 2 (Ack)"]
     Coord -.->|Async Write 3| R3["Replica 3 (Pending)"]
 
     subgraph QuorumRule["Quorum Check (N=3, W=2, R=2)"]
-        QR["W=2 Acks Received -> Write Successful!<br/>R + W (2 + 2 = 4) > 3 -> Overlap Guarantees Latest Read"]
+        QR["W=2 Acks Received -> OK<br/>R + W (2 + 2 = 4) > 3<br/>Guarantees Latest Read"]
     end
 ```
 
@@ -92,8 +98,8 @@ flowchart TD
     Key --> H2["Hash 2 -> Bit 11"]
     Key --> H3["Hash 3 -> Bit 19"]
 
-    subgraph BitArray["Bit Array (Memory)"]
-        B["[0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 0 0]"]
+    subgraph BitArray["Bit Array in RAM"]
+        B["Bits: 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1"]
     end
 
     H1 & H2 & H3 --> BitArray

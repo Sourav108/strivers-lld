@@ -4,31 +4,31 @@
 
 ```mermaid
 flowchart TD
-    subgraph InternalTenants["Internal Product Engineering Teams"]
-        T1["Auth Team (OTP / 2FA)"]
-        T2["Billing Team (Invoices)"]
-        T3["Growth Team (Marketing Blasts)"]
+    subgraph InternalTenants["Internal Product Teams"]
+        T1["Auth (OTP)"]
+        T2["Billing (Invoices)"]
+        T3["Growth (Marketing)"]
     end
 
-    InternalTenants -->|Unified SDK / gRPC| IngestGW["Platform Ingestion Gateway"]
+    InternalTenants -->|Platform SDK| IngestGW["Platform Gateway"]
 
-    subgraph GovernanceTier["Governance, Quotas & Consent Tier"]
-        IngestGW --> QuotaEnforcer["Tenant Quota & Rate Limiter (Redis)"]
-        QuotaEnforcer --> ConsentStore["User Preferences & GDPR Opt-Out Registry (Postgres / Redis)"]
-        ConsentStore --> Deduplicator["Cross-Team Smart Deduplicator (Redis)"]
+    subgraph GovernanceTier["Governance & Consent"]
+        IngestGW --> QuotaEnforcer["Tenant Quotas (Redis)"]
+        QuotaEnforcer --> ConsentStore["User GDPR Opt-Outs"]
+        ConsentStore --> Deduplicator["Deduplicator"]
     end
 
-    subgraph PriorityStreamingTier["Multi-Priority Partitioned Kafka Topics"]
-        Deduplicator --> P0["Topic: notif_p0_critical (OTP)"]
-        Deduplicator --> P1["Topic: notif_p1_transactional (Orders)"]
-        Deduplicator --> P2["Topic: notif_p2_bulk (Promotions)"]
+    subgraph PriorityStreamingTier["Kafka Priority Topics"]
+        Deduplicator --> P0["P0: Critical (OTP)"]
+        Deduplicator --> P1["P1: Transactional"]
+        Deduplicator --> P2["P2: Bulk Marketing"]
     end
 
-    subgraph MultiVendorWorkerFleet["Channel Worker Fleets with Auto-Failover"]
-        P0 & P1 & P2 --> PushFleet["Push Fleet (APNS / FCM)"]
-        P0 & P1 & P2 --> SMSFleet["SMS Fleet (Twilio -> MessageBird -> AWS SNS)"]
-        P0 & P1 & P2 --> EmailFleet["Email Fleet (SendGrid -> Amazon SES)"]
+    subgraph ChannelWorkers["Channel Workers & Failover"]
+        P0 & P1 & P2 --> PushFleet["Push (APNS/FCM)"]
+        P0 & P1 & P2 --> SMSFleet["SMS (Twilio/AWS)"]
+        P0 & P1 & P2 --> EmailFleet["Email (SendGrid/SES)"]
     end
 
-    PushFleet & SMSFleet & EmailFleet --> TelemetryDB[("Tenant Cost & Audit Analytics (ClickHouse)")]
+    PushFleet & SMSFleet & EmailFleet --> TelemetryDB[("Cost & Audit DB (ClickHouse)")]
 ```

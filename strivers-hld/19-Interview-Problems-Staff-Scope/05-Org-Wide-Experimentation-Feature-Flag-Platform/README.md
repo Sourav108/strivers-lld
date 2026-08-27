@@ -4,22 +4,22 @@
 
 ```mermaid
 flowchart TD
-    subgraph ControlPlane["1. Experiment Management & Rule Distribution (Control Plane)"]
-        Dashboard["Experimenter Dashboard (Data Scientists / PMs)"] --> AdminAPI["Experiment Management Service"]
-        AdminAPI --> ConfigDB[("Experiment Metadata DB (PostgreSQL)")]
-        AdminAPI --> CDN["Global CDN Edge (Rule Manifest: rules.json.gz)"]
+    subgraph ControlPlane["1. Control Plane (Rules Distribution)"]
+        Dashboard["Experimenter UI"] --> AdminAPI["Admin API"]
+        AdminAPI --> ConfigDB[("Metadata DB (Postgres)")]
+        AdminAPI --> CDN["CDN Edge (Manifest)"]
     end
 
-    subgraph DataPlane["2. Ultra-Low Latency Evaluation (Data Plane - In-Memory SDK)"]
-        ClientApp["Mobile / Web / Microservice Host"] --> LocalSDK["Embedded Experimentation SDK"]
-        CDN -.->|Poll every 60s or SSE Stream| LocalSDK
-        LocalSDK -->|Murmur3 Hash (0.01ms in RAM)| Variant["Assigned Variant: Control vs Treatment A"]
+    subgraph DataPlane["2. Data Plane (In-Memory SDK)"]
+        ClientApp["Client App / Pod"] --> LocalSDK["Embedded SDK"]
+        CDN -.->|Poll 60s / SSE| LocalSDK
+        LocalSDK -->|Murmur3 Hash (RAM)| Variant["Variant: Control / Treatment"]
     end
 
-    subgraph MetricsPlane["3. Statistical Metrics & Exposure Pipeline (Analytics Plane)"]
-        LocalSDK -->|Async Batched Exposure Event| Kafka["Kafka Exposure Stream"]
-        Kafka --> Ingester["Stream Ingester (Flink)"]
-        Ingester --> ClickHouse[("Real-Time Statistical OLAP (ClickHouse / Snowflake)")]
+    subgraph MetricsPlane["3. Analytics Plane (Exposure Stream)"]
+        LocalSDK -->|Async Batch Event| Kafka["Kafka Exposure Stream"]
+        Kafka --> Ingester["Flink Ingester"]
+        Ingester --> ClickHouse[("Analytics OLAP (ClickHouse)")]
         ClickHouse --> Dashboard
     end
 ```

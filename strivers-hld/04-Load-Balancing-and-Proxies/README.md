@@ -6,13 +6,13 @@ Load Balancers distribute incoming network traffic across multiple backend serve
 
 ```mermaid
 flowchart TD
-    Client["Client Traffic"] --> L4["L4 Load Balancer (Transport Layer)<br/>- Inspects IP & Port only<br/>- No TLS decryption / packet inspection<br/>- Ultra high throughput (Millions of QPS)<br/>- e.g., AWS NLB, Linux IPVS"]
+    Client["Client Traffic"] --> L4["L4 Load Balancer<br/>(Transport Layer / NLB)<br/>IP & Port Routing"]
     
-    L4 --> L7["L7 Load Balancer / Reverse Proxy (Application Layer)<br/>- Terminates TLS/SSL<br/>- Inspects HTTP Headers, Cookies, Paths, Query Params<br/>- Content-based smart routing<br/>- e.g., AWS ALB, NGINX, HAProxy, Envoy"]
+    L4 --> L7["L7 Load Balancer<br/>(Application Layer / ALB)<br/>Path & Header Routing"]
     
-    L7 -->|Path: /users/*| UserSvc["User Service Cluster"]
-    L7 -->|Path: /orders/*| OrderSvc["Order Service Cluster"]
-    L7 -->|Path: /payments/*| PaySvc["Payment Service Cluster"]
+    L7 -->|Path: /users/*| UserSvc["User Service"]
+    L7 -->|Path: /orders/*| OrderSvc["Order Service"]
+    L7 -->|Path: /payments/*| PaySvc["Payment Service"]
 ```
 
 | Dimension | Layer 4 (L4) Load Balancing | Layer 7 (L7) Load Balancing |
@@ -31,11 +31,11 @@ flowchart TD
 ```mermaid
 flowchart LR
     LB["Load Balancer"] --> Alg1["1. Round Robin"]
-    LB --> Alg2["2. Weighted Round Robin"]
-    LB --> Alg3["3. Least Connections"]
-    LB --> Alg4["4. Weighted Least Connections"]
-    LB --> Alg5["5. IP Hash / Session Affinity"]
-    LB --> Alg6["6. Consistent Hashing"]
+    LB --> Alg2["2. Weighted RR"]
+    LB --> Alg3["3. Least Conns"]
+    LB --> Alg4["4. Weighted Conns"]
+    LB --> Alg5["5. IP Hash"]
+    LB --> Alg6["6. Consistent Hash"]
 ```
 
 1. **Round Robin**: Sequentially distributes requests to each server in order. (Best when all servers have identical hardware and requests have equal processing cost).
@@ -51,15 +51,15 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    subgraph Forward["Forward Proxy (Protects & Represents Clients)"]
-        C1["Internal Client 1"] & C2["Internal Client 2"] --> FP["Forward Proxy<br/>- Anonymity<br/>- Enterprise Content Filter<br/>- Outbound Cache"]
-        FP --> Internet1["Public Internet"]
+    subgraph Forward["Forward Proxy (For Clients)"]
+        C1["Client 1"] & C2["Client 2"] --> FP["Forward Proxy<br/>- Anonymity<br/>- URL Filter"]
+        FP --> Internet1["Internet"]
     end
 
-    subgraph Reverse["Reverse Proxy (Protects & Represents Servers)"]
-        Internet2["Public Internet Clients"] --> RP["Reverse Proxy<br/>- SSL Termination<br/>- Load Balancing<br/>- DDoS Protection<br/>- Response Caching"]
-        RP --> S1["Backend Server 1"]
-        RP --> S2["Backend Server 2"]
+    subgraph Reverse["Reverse Proxy (For Servers)"]
+        Internet2["Clients"] --> RP["Reverse Proxy<br/>- SSL & LB<br/>- DDoS Shield"]
+        RP --> S1["Server 1"]
+        RP --> S2["Server 2"]
     end
 ```
 
@@ -78,16 +78,16 @@ An **API Gateway** is a specialized Layer 7 reverse proxy that acts as the singl
 
 ```mermaid
 flowchart TD
-    Client["Mobile / Web / Third-party Clients"] --> Gateway["API Gateway (e.g. Kong / Envoy / Spring Cloud Gateway)"]
+    Client["Clients"] --> Gateway["API Gateway (Envoy / Kong)"]
     
-    subgraph GatewayResponsibilities["Gateway Cross-Cutting Concerns"]
+    subgraph GatewayResponsibilities["Gateway Responsibilities"]
         direction TB
-        G1["🔐 Authentication & Authorization (JWT validation)"]
-        G2["🚦 Rate Limiting & Throttling (Token Bucket)"]
-        G3["🔀 Path Routing & Dynamic Service Discovery"]
-        G4["📦 Request Aggregation (BFF - Backend for Frontend)"]
-        G5["📊 Logging, Metrics & Distributed Tracing Headers"]
-        G6["🔒 SSL/TLS Termination & CORS Headers"]
+        G1["Auth & JWT Validation"]
+        G2["Rate Limiting & Throttling"]
+        G3["Dynamic Service Discovery"]
+        G4["Request Aggregation (BFF)"]
+        G5["Logging & Distributed Tracing"]
+        G6["SSL Termination & CORS"]
     end
 
     Gateway --> GatewayResponsibilities

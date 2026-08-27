@@ -59,19 +59,19 @@ An operation is **Idempotent** if applying it multiple times yields the exact sa
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Client as Mobile Client
-    participant Gateway as API Gateway / App Service
+    actor Client as Mobile App
+    participant Gateway as API Gateway
     participant Redis as Redis Idempotency Store
     participant DB as Postgres DB
 
-    Client->>Gateway: POST /v1/payments (Idempotency-Key: "uuid-abc-123")
-    Gateway->>Redis: SET "idemp:uuid-abc-123" "IN_PROGRESS" NX EX 120
+    Client->>Gateway: POST /v1/payments (Idempotency-Key: "uuid-999")
+    Gateway->>Redis: SET "idemp:uuid-999" "IN_PROGRESS" NX EX 120
     alt Key already exists
-        Gateway-->>Client: Return previously cached response (200 OK)
+        Gateway-->>Client: Cached Receipt (200 OK)
     else First Time Execution
-        Gateway->>DB: Process Transaction & Debit Account
-        DB-->>Gateway: Transaction Committed
-        Gateway->>Redis: SET "idemp:uuid-abc-123" "{status: 'SUCCESS', txn_id: 'tx_99'}" EX 86400
+        Gateway->>DB: Process Payment & Debit Account
+        DB-->>Gateway: Txn Committed
+        Gateway->>Redis: SET "idemp:uuid-999" "SUCCESS" EX 86400
         Gateway-->>Client: 200 OK (Payment Processed)
     end
 ```
@@ -84,10 +84,16 @@ In distributed systems, physical clocks across servers drift by milliseconds due
 
 ```mermaid
 flowchart TD
-    TimeOrder["Tracking Event Ordering"] --> NTP["Physical Clocks (NTP)<br/>Clock drift causes data loss on Last-Write-Wins"]
-    TimeOrder --> Lamport["Lamport Timestamps<br/>Monotonic counter provides Total Ordering"]
-    TimeOrder --> Vector["Vector Clocks (V_A, V_B, V_C)<br/>Tracks causal relationships & detects conflicts"]
-    TimeOrder --> TrueTime["Google TrueTime API<br/>Bounded uncertainty interval via GPS + Atomic Clocks"]
+    TimeOrder["Event Ordering"]
+    
+    subgraph OrderingMechanisms["Ordering Mechanisms"]
+        NTP["Physical NTP Clocks<br/>(Clock drift causes LWW loss)"]
+        Lamport["Lamport Logical Timestamps<br/>(Monotonic counter ordering)"]
+        Vector["Vector Clocks (V_A, V_B)<br/>(Causal conflict detection)"]
+        TrueTime["Google TrueTime API<br/>(GPS + Atomic Clocks)"]
+    end
+
+    TimeOrder --> OrderingMechanisms
 ```
 
 | Mechanism | Description | Conflict Handling | Best For |

@@ -4,35 +4,35 @@
 
 ```mermaid
 flowchart TD
-    Alice["Alice (Sender App)"] -->|Encrypted Payload over WebSocket| GW1["Chat Gateway Node 1 (Netty / Erlang)"]
-    Bob["Bob (Recipient App)"] -->|WebSocket Connection| GW2["Chat Gateway Node 2"]
+    Alice["Alice (Sender)"] -->|WebSocket| GW1["Chat Gateway 1"]
+    Bob["Bob (Recipient)"] -->|WebSocket| GW2["Chat Gateway 2"]
 
-    subgraph KeyManagement["Public Key & Identity Tier"]
-        KeySvc["Public Key Directory (PreKey Bundles / X3DH)"]
-        KeyDB[("PreKey Database (DynamoDB / Cassandra)")]
+    subgraph KeyTier["Public Key Directory"]
+        KeySvc["PreKey Service"]
+        KeyDB[("PreKey DB (DynamoDB)")]
         KeySvc <--> KeyDB
     end
 
-    subgraph RoutingTier["Real-Time Session Routing"]
-        SessionRegistry["Distributed Session Store (Redis Cluster)"]
-        Router["Message Router Service"]
+    subgraph RoutingTier["Session Routing"]
+        SessionRegistry["Session Registry (Redis)"]
+        Router["Message Router"]
     end
 
     GW1 --> Router
     Router <--> SessionRegistry
-    Router -->|Push to GW2 via gRPC| GW2
-    GW2 -->|Deliver over socket| Bob
+    Router -->|gRPC| GW2
+    GW2 --> Bob
 
-    subgraph OfflineForwarding["Offline Store & Forward"]
-        Kafka["Kafka Offline Ingest Stream"]
-        OfflineDB[("Ephemeral Store (ScyllaDB / Cassandra - TTL 30d)")]
-        PushGW["Push Notification Gateway (APNS / FCM)"]
+    subgraph OfflineTier["Offline Queue"]
+        Kafka["Kafka Stream"]
+        OfflineDB[("Ephemeral DB (TTL 30d)")]
+        PushGW["Push Gateway (APNS/FCM)"]
     end
 
     Router -->|If Bob Offline| Kafka
     Kafka --> OfflineDB
     Kafka --> PushGW
-    PushGW -->|Wake device| Bob
+    PushGW --> Bob
 ```
 
 ---

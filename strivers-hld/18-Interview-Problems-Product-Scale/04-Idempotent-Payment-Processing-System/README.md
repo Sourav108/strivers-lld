@@ -52,7 +52,7 @@ sequenceDiagram
         PG->>Bank: Execute Card Authorization
         Bank-->>PG: Authorized (Status: "SUCCESS")
         PG->>DB: Record Double-Entry Debit/Credit (Status: "SUCCESS")
-        PG->>Redis: SET "idemp:idemp_999" "{status: 'SUCCESS', id: 'ch_1'}" EX 86400
+        PG->>Redis: SET "idemp:idemp_999" "SUCCESS (ch_1)" EX 86400
         PG-->>Merchant: 200 OK (Charge Succeeded)
     end
 ```

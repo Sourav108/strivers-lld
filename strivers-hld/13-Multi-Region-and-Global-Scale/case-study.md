@@ -6,9 +6,9 @@ Meta operates hyperscale data centers across North America, Europe, and Asia. Ro
 
 ```mermaid
 flowchart TD
-    Client["Global Users"] --> Cartographer["Meta Cartographer (Performance-Aware Traffic Router)"]
+    Client["Global Users"] --> Cartographer["Meta Cartographer<br/>(Traffic Router)"]
     Cartographer --> PoP["Edge Point of Presence (PoP)"]
-    PoP --> PrivateBackbone["Meta Dedicated Terabit Fiber Backbone"]
+    PoP --> PrivateBackbone["Dedicated Fiber Backbone"]
     PrivateBackbone --> Region["Regional Datacenter (Regional Shards)"]
 ```
 

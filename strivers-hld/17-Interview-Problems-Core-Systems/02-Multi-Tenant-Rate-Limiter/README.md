@@ -4,26 +4,26 @@
 
 ```mermaid
 flowchart TD
-    Client["Client Requests (Tenants A, B, C)"] --> Envoy["Envoy API Gateway (Edge Reverse Proxy)"]
+    Client["Client Requests (Tenants)"] --> Envoy["Envoy API Gateway"]
 
-    subgraph RateLimitingFilter["Envoy Rate Limiter Filter (gRPC RLS)"]
-        LocalCache["Local In-Process Caffeine Cache (Rule Configs)"]
-        RL_Engine["Rate Limit Decision Engine"]
+    subgraph RateLimitingFilter["Rate Limiter Filter (Envoy RLS)"]
+        LocalCache["Local Rule Cache (Caffeine)"]
+        RL_Engine["Rate Limit Engine"]
     end
 
     Envoy --> RL_Engine
     RL_Engine <--> LocalCache
 
     subgraph MultiTenantRedisTier["Multi-Tenant Redis Cluster"]
-        RedisShards["Redis Cluster (Sharded by tenant_id)"]
-        ConfigPostgres[("Dynamic Rules DB (PostgreSQL)")]
+        RedisShards["Redis Cluster (tenant_id shard)"]
+        ConfigPostgres[("Rules DB (Postgres)")]
     end
 
-    RL_Engine <-->|Atomic Sliding Window Lua (<0.5ms)| RedisShards
-    LocalCache -.->|Change Data Capture (CDC)| ConfigPostgres
+    RL_Engine <-->|Sliding Window Lua (< 0.5ms)| RedisShards
+    LocalCache -.->|CDC Sync| ConfigPostgres
 
-    RL_Engine -->|Allowed (200)| UpstreamCluster["Upstream Microservices"]
-    RL_Engine -->|Throttled| 429["HTTP 429 Rate Limit Exceeded"]
+    RL_Engine -->|200 OK| UpstreamCluster["Upstream Microservices"]
+    RL_Engine -->|Throttled| 429["HTTP 429 Too Many Requests"]
 ```
 
 ---

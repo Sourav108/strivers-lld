@@ -4,9 +4,9 @@
 
 ```mermaid
 flowchart TD
-    Request["Incoming Request"] --> AuthN["1. Authentication (AuthN)<br/>'Who are you?'<br/>- Passwords, OAuth2, Passkeys, JWT, MFA"]
-    AuthN -->|Identity Verified| AuthZ["2. Authorization (AuthZ)<br/>'What are you permitted to do?'<br/>- RBAC (Role-Based), ABAC (Attribute-Based), Scopes"]
-    AuthZ -->|Access Granted| Protected["Protected Resource"]
+    Request["Incoming Request"] --> AuthN["1. Authentication (AuthN)<br/>Who are you?<br/>(Passkeys, OAuth2, JWT)"]
+    AuthN -->|Identity OK| AuthZ["2. Authorization (AuthZ)<br/>What can you do?<br/>(RBAC, ABAC, Scopes)"]
+    AuthZ -->|Access OK| Protected["Protected Resource"]
 ```
 
 ---
@@ -17,19 +17,19 @@ flowchart TD
 sequenceDiagram
     autonumber
     actor User as End User
-    participant App as Client Application (SPA / Mobile)
-    participant Auth0 as Authorization Server (OAuth 2.0)
+    participant App as Client App (SPA / Mobile)
+    participant Auth0 as Auth Server (OAuth 2.0)
     participant API as Resource API Gateway
 
     User->>App: Click "Login with Google"
-    App->>Auth0: Redirect to /authorize (with code_challenge)
-    Auth0->>User: Display Login & Consent Screen
+    App->>Auth0: Redirect to /authorize (code_challenge)
+    Auth0->>User: Display Login & Consent
     User-->>Auth0: Authenticates (Credentials + 2FA)
-    Auth0-->>App: Redirect with Authorization Code
-    App->>Auth0: POST /token (Authorization Code + code_verifier)
-    Auth0-->>App: Return Access Token (Signed JWT) + Refresh Token
-    App->>API: GET /v1/profile (Authorization: Bearer <JWT>)
-    Note over API: Verifies JWT signature locally via Public Key (JWKS)
+    Auth0-->>App: Redirect with Auth Code
+    App->>Auth0: POST /token (Code + code_verifier)
+    Auth0-->>App: Return Access Token (JWT)
+    App->>API: GET /v1/profile (Bearer JWT)
+    Note over API: Verifies JWT signature locally via JWKS
     API-->>App: 200 OK (User Data)
 ```
 
@@ -45,12 +45,22 @@ $$\mathbf{\text{JWT}} = \underbrace{\text{Base64(Header)}}_{\text{Algorithm: RS2
 Rate limiting protects APIs from abuse, credential stuffing, and DDoS outages.
 
 ```mermaid
-flowchart LR
-    Algorithms["Rate Limiting Algorithms"] --> TB["1. Token Bucket<br/>(Refills tokens at steady rate; allows burst traffic)"]
-    Algorithms --> LB["2. Leaky Bucket<br/>(Smooths out traffic to constant output rate via FIFO queue)"]
-    Algorithms --> FW["3. Fixed Window Counter<br/>(Counts requests per minute window; prone to boundary spike)"]
-    Algorithms --> SWL["4. Sliding Window Log<br/>(Stores every timestamp in Redis ZSET; high memory cost)"]
-    Algorithms --> SWC["5. Sliding Window Counter<br/>(Hybrid weighted memory-efficient formula; industry standard)"]
+flowchart TD
+    Algorithms["Rate Limiting Algorithms"]
+    
+    subgraph BucketBased["Bucket Approaches"]
+        TB["1. Token Bucket<br/>(Refills steady, allows bursts)"]
+        LB["2. Leaky Bucket<br/>(Smooth constant outflow)"]
+    end
+
+    subgraph WindowBased["Window Approaches"]
+        FW["3. Fixed Window<br/>(Prone to boundary spikes)"]
+        SWL["4. Sliding Window Log<br/>(Exact timestamps in ZSET)"]
+        SWC["5. Sliding Window Counter<br/>(Hybrid formula: Cloudflare / Envoy)"]
+    end
+
+    Algorithms --> BucketBased
+    Algorithms --> WindowBased
 ```
 
 ### Algorithm Comparison Matrix:

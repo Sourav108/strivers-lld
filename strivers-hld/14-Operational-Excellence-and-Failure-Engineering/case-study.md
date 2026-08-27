@@ -8,7 +8,7 @@ During Amazon Prime Day, traffic surges by orders of magnitude in seconds. Simul
 flowchart TD
     Traffic["100x Traffic Surge"] --> Edge["Amazon Edge Envoy / CloudFront"]
     Edge --> LoadShedder["Token-Bucket Load Shedder"]
-    LoadShedder -->|Tier 1 (Checkout)| CheckoutSvc["Checkout Service (100% Guaranteed Capacity)"]
+    LoadShedder -->|Tier 1 (Checkout)| CheckoutSvc["Checkout Service (Guaranteed)"]
     LoadShedder -->|Tier 3 (Reviews/Recommendations)| DropWorker["Degraded / Static Recommendations"]
 ```
 

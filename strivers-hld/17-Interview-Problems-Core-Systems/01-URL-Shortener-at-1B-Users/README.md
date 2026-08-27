@@ -4,26 +4,26 @@
 
 ```mermaid
 flowchart TD
-    Client["Global Client Browser / App"] --> Anycast["BGP Anycast Ingress (Cloudflare Edge)"]
-    Anycast --> EdgeCache["Edge PoP In-Memory Cache Tier"]
+    Client["Client Browser"] --> Anycast["Anycast Ingress (Edge PoP)"]
+    Anycast --> EdgeCache["Edge In-Memory Cache"]
     
-    EdgeCache -->|Edge Cache Hit (Sub-5ms)| ReturnClient["302 Redirect to Long URL"]
-    EdgeCache -->|Edge Cache Miss| RegionalGateway["Regional API Gateway (Envoy)"]
+    EdgeCache -->|Hit: < 5ms| ReturnClient["302 Redirect"]
+    EdgeCache -->|Miss| RegionalGateway["Regional Gateway (Envoy)"]
 
-    subgraph RegionalCluster["Regional Application Cluster (US / EU / APAC)"]
-        WriteSvc["URL Write Service"]
-        ReadSvc["Redirection Service"]
-        LocalRedis["Regional Redis Read Cluster"]
+    subgraph RegionalCluster["Regional Application Cluster"]
+        WriteSvc["Write Service"]
+        ReadSvc["Redirect Service"]
+        LocalRedis["Redis Read Cache"]
     end
 
-    RegionalGateway -->|POST /api/v1/shorten| WriteSvc
+    RegionalGateway -->|POST /shorten| WriteSvc
     RegionalGateway -->|GET /:short_key| ReadSvc
     ReadSvc --> LocalRedis
 
-    subgraph GlobalDataTier["Global Storage & Token Pipeline"]
-        KGSCluster["Distributed Key Generation Service (Zookeeper / etcd coordinated)"]
-        GlobalDB[("CockroachDB / DynamoDB Multi-Region Tables")]
-        KafkaAnalytics["Kafka Clickhouse Telemetry Pipeline"]
+    subgraph GlobalDataTier["Global Storage Tier"]
+        KGSCluster["KGS Token Cluster<br/>(etcd range leases)"]
+        GlobalDB[("Multi-Region DB<br/>(DynamoDB / Spanner)")]
+        KafkaAnalytics["Kafka + ClickHouse Analytics"]
     end
 
     WriteSvc <--> KGSCluster

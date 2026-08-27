@@ -4,24 +4,24 @@
 
 ```mermaid
 flowchart TD
-    Driver["Driver App (GPS every 4s)"] -->|gRPC Stream| LocationGW["Location Ingestion Gateway Fleet"]
-    Rider["Rider App (Request Ride)"] -->|HTTPS| MatchGW["Matching API Gateway"]
+    Driver["Driver App (GPS)"] -->|gRPC| LocationGW["Location Gateway"]
+    Rider["Rider App"] -->|HTTPS| MatchGW["Match API Gateway"]
 
-    subgraph RealTimePipeline["Real-Time Streaming & Indexing"]
-        LocationGW --> Kafka["Kafka Location Stream (Partitioned by City)"]
-        Kafka --> Ingester["Location Ingester Workers"]
-        Ingester --> H3Cache[("In-Memory Hexagonal Spatial Index (Uber H3 / Redis)")]
+    subgraph StreamingTier["Location Pipeline"]
+        LocationGW --> Kafka["Kafka Stream (City Topic)"]
+        Kafka --> Ingester["Location Ingesters"]
+        Ingester --> H3Cache[("Uber H3 Spatial Index (Redis)")]
     end
 
-    subgraph MatchmakingCore["Matchmaking & Dispatch Engine"]
-        MatchGW --> MatchEngine["Matchmaking Engine"]
+    subgraph MatchmakingCore["Match Engine"]
+        MatchGW --> MatchEngine["Matching Engine"]
         MatchEngine <--> H3Cache
-        MatchEngine --> Redlock["Distributed Lock Service (Redis Redlock)"]
+        MatchEngine --> Redlock["Redlock (15s Lock)"]
         MatchEngine --> DispatchWorker["Dispatch Worker"]
     end
 
     DispatchWorker -->|Push Offer| LocationGW
-    MatchEngine --> TripDB[("Trip Master Database (PostgreSQL / Docstore)")]
+    MatchEngine --> TripDB[("Trip Master DB (Postgres)")]
 ```
 
 ---

@@ -8,9 +8,9 @@ $$\text{TCO} = \text{Infrastructure Cloud Bills} + \text{Third-Party SaaS Licens
 
 ```mermaid
 flowchart TD
-    BuildCheck["Architecture Strategy: Build vs Buy"] --> CoreCheck{"Is this technology our company's CORE competitive differentiator?"}
-    CoreCheck -->|No (e.g. Auth, Email, Logging)| Buy["BUY / Adopt Managed SaaS<br/>- Okta/Auth0 for Auth<br/>- SendGrid for Email<br/>- Datadog/Managed Grafana for Observability<br/>- Saves engineering headcount"]
-    CoreCheck -->|Yes (e.g. Core Search, ML Recommendation, Real-time Pricing)| Build["BUILD In-House<br/>- Custom Lucene/Elasticsearch cluster<br/>- Custom matching algorithms<br/>- Proprietary competitive advantage"]
+    BuildCheck["Architecture Evaluation"] --> CoreCheck{"Core Business<br/>Differentiator?"}
+    CoreCheck -->|No e.g. Auth, Email| Buy["BUY / Managed SaaS<br/>(Auth0, SendGrid, Datadog)<br/>Saves Engineering Headcount"]
+    CoreCheck -->|Yes e.g. Search, ML| Build["BUILD In-House<br/>(Custom Elasticsearch / ML)<br/>Competitive Advantage"]
 ```
 
 ---

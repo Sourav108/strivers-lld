@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TD
-    Frontier["URL Frontier (Priority & Politeness Queues)"] --> FetcherFleet["Distributed Fetcher Fleet (Async Epoll / Go)"]
+    Frontier["URL Frontier<br/>(Priority & Politeness)"] --> FetcherFleet["Fetcher Fleet (Epoll / Go)"]
     
     subgraph FetcherInternal["Fetcher Subsystem"]
         DNS["Local Async DNS Cache (C-ARES)"]
@@ -17,7 +17,7 @@ flowchart TD
     FetcherFleet --> Parser["HTML Parser & Content Extractor"]
     
     Parser --> SimHashCheck{"Content Duplicate Check?<br/>(64-bit SimHash)"}
-    SimHashCheck -->|New Content| S3Storage["Raw Document Storage (Amazon S3 / Bigtable)"]
+    SimHashCheck -->|New Content| S3Storage["Raw Document Store (S3)"]
     S3Storage --> Indexer["Search & Vector Indexing Pipeline"]
 
     Parser --> LinkExtractor["Outbound Link Extractor"]

@@ -7,7 +7,7 @@ As technology companies scale from 50 to 5,000 engineers, architectural quality 
 ```mermaid
 flowchart TD
     Engineer["Author Engineer"] --> RFC["Draft RFC Design Document"]
-    RFC --> AsyncReview["Async Multi-Team Review (Comments in Google Docs)"]
+    RFC --> AsyncReview["Async Multi-Team Review"]
     AsyncReview --> ArchGuild["Architecture Review Guild (Staff+ Council)"]
     ArchGuild -->|Approved| Implementation["Phased Rollout / Implementation"]
 ```

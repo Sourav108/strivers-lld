@@ -6,12 +6,12 @@ Both Meta (Facebook) and Twitter handle billions of timeline reads every hour. A
 
 ```mermaid
 flowchart TD
-    Client["Client Mobile App"] --> CDN["CDN Edge Cache (Static media & avatars)"]
+    Client["Client App"] --> CDN["CDN Edge (Media)"]
     CDN --> Web["Web Tier"]
-    Web --> Mcrouter["Mcrouter Proxy (Meta) / Twemproxy (Twitter)"]
-    Mcrouter --> CachePoolA["Fast In-Memory Cache Tier (Memcached)"]
-    Mcrouter --> CachePoolB["Timeline Structure Cache (Redis Sorted Sets)"]
-    Web --> DB["Storage Tier (MySQL Shards / RocksDB)"]
+    Web --> Mcrouter["Mcrouter Proxy"]
+    Mcrouter --> CachePoolA["Fast Cache (Memcached)"]
+    Mcrouter --> CachePoolB["Timeline Cache (Redis ZSET)"]
+    Web --> DB["Storage (MySQL / RocksDB)"]
 ```
 
 ---

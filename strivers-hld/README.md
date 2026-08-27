@@ -14,11 +14,11 @@
 ```mermaid
 flowchart TD
     subgraph StaffSignals["Staff System Design Evaluation Dimensions"]
-        A["1. Ambiguity & Problem Framing<br/>(Scope under missing constraints, business alignment)"]
-        B["2. Multi-Region & Failure Domains<br/>(Blast radius containment, split-brain recovery, RTO/RPO)"]
-        C["3. Operational & Chaos Engineering<br/>(Graceful degradation, backpressure, SLI/SLO error budgets)"]
-        D["4. Economics & Technical Strategy<br/>(TCO analysis, build-vs-buy, migration paths via Strangler Fig)"]
-        E["5. Platform Thinking & Cross-Team Impact<br/>(Shared multi-tenant governance, RFC defense under pushback)"]
+        A["1. Ambiguity Framing<br/>(Scope missing requirements)"]
+        B["2. Multi-Region Resilience<br/>(Blast radius & RTO/RPO)"]
+        C["3. Failure Engineering<br/>(Load shedding & SLOs)"]
+        D["4. Economics & TCO<br/>(Build-vs-buy & migrations)"]
+        E["5. Platform Thinking<br/>(Shared systems & RFCs)"]
     end
 ```
 

@@ -4,20 +4,20 @@
 
 ```mermaid
 flowchart TD
-    UserQuery["User Search Query: 'wireless noise cancelling headphones'"] --> Gateway["API Gateway"]
-    Gateway --> SearchService["Search Orchestrator Service"]
+    UserQuery["Search Query"] --> Gateway["API Gateway"]
+    Gateway --> SearchService["Search Orchestrator"]
 
-    subgraph QueryProcessing["Query Understanding & Embedding"]
-        SearchService --> NLPParser["Spell Check & Synonyms Tokenizer"]
-        SearchService --> EmbeddingModel["Text Embedding Model (BERT/CLIP ONNX)"]
+    subgraph QueryProcessing["Query Pipeline"]
+        SearchService --> NLPParser["NLP & Synonyms"]
+        SearchService --> EmbeddingModel["Vector Embeddings (BERT)"]
     end
 
-    subgraph SearchTier["Distributed OpenSearch Cluster"]
-        SearchService -->|1. BM25 Lexical Inverted Index Query| LexicalSearch["BM25 Lexical Keyword Search"]
-        SearchService -->|2. k-NN Vector Search Query| VectorSearch["Vector Graph Search (HNSW Index)"]
+    subgraph SearchTier["OpenSearch Cluster"]
+        SearchService -->|1. BM25 Query| LexicalSearch["BM25 Lexical Search"]
+        SearchService -->|2. k-NN Query| VectorSearch["HNSW Vector Search"]
     end
 
-    LexicalSearch & VectorSearch --> HybridRanker["Reciprocal Rank Fusion (RRF) & ML Re-ranker"]
-    HybridRanker --> TopResults["Top 50 Ranked Product Results"]
+    LexicalSearch & VectorSearch --> HybridRanker["RRF & ML Re-ranker"]
+    HybridRanker --> TopResults["Top 50 Results"]
     TopResults --> Gateway
 ```
